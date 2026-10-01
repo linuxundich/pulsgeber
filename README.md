@@ -35,11 +35,12 @@ the machine.
 - While a profile is picked by hand, the menu header says until when it lasts
   and what comes next, e.g. “Until on battery, then Cool and breezy”.
 - Pulse icons per profile: one low pulse for power saving, two for balanced,
-  three dense ones for performance. Optionally the icon also shows in the top
-  bar while a non-default profile is active.
-- Profiles created in TCC show up in the menu the next time it opens; their
-  icon is guessed from their CPU and fan settings and can be pinned in the
-  preferences. Settings of deleted profiles are cleaned up when the
+  three dense ones for performance, and a pulse above a slider for profiles
+  you created yourself in TCC. Optionally the icon also shows in the top bar
+  while a non-default profile is active.
+- Profiles created in TCC show up in the menu the next time it opens, with
+  the custom profile icon; TCC's own profiles get an icon guessed from their
+  CPU and fan settings. Every icon can be pinned in the preferences. Settings of deleted profiles are cleaned up when the
   preferences open.
 
 **Preferences**
@@ -49,7 +50,7 @@ the machine.
   power-profiles-daemon”, see
   [TCC and power-profiles-daemon](#tcc-and-power-profiles-daemon).
 - Profiles: show or hide each profile in the menu and pick its icon
-  (automatic, performance, balanced, power saver). Default profiles can't be
+  (automatic, performance, balanced, power saver, custom profile). Default profiles can't be
   hidden.
 - A link to the TUXEDO Control Center and an About dialog.
 

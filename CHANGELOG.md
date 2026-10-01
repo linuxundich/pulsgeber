@@ -10,6 +10,13 @@ fixes on top of it. The version lives in `version-name` in
 
 ## [Unreleased]
 
+### Added
+- A fourth profile icon for profiles created in the TCC: a pulse above a
+  slider, i.e. set up by hand (draft B in `docs/icon-drafts/custom/`). Such
+  profiles get it automatically, since tccd lists them apart from its own
+  profiles; TCC's own profiles keep their guessed pulse icon. It can also be
+  picked for any profile in the preferences (“Custom Profile”).
+
 ## [0.3.0] - 2026-10-02
 
 ### Changed

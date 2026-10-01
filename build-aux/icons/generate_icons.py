@@ -72,13 +72,29 @@ def pulse(d: str) -> str:
 BALANCED = "M1 12 H4 V4 H8 V12 H12 V4 H15"
 SYMBOLIC = pulse(BALANCED)
 
+
+def rects(*boxes: tuple) -> str:
+    return "".join(f'  <rect x="{x}" y="{y}" width="{w}" height="{h}" fill="{SYM}"/>\n'
+                   for x, y, w, h in boxes)
+
+
+def merge(*svgs: str) -> str:
+    """Fügt die Körper mehrerer 16-px-SVGs zu einem zusammen."""
+    body = "".join(s.split(">\n", 1)[1].rsplit("</svg>", 1)[0] for s in svgs)
+    return svg(body, 16)
+
+
 # Profilsymbole für Pille, Menü und obere Leiste: je mehr Leistung, desto
 # dichter und höher der Puls. Die Kanten liegen auf ganzen Pixeln, damit die
-# 2 px breiten Linien bei 16 px scharf bleiben.
+# 2 px breiten Linien bei 16 px scharf bleiben. Eigene, in TCC angelegte
+# Profile zeigen einen Puls über einem Schieberegler (Entwurf B in
+# docs/icon-drafts/custom/): selbst eingestellt.
 PROFILE_ICONS = {
-    "power-saver": "M1 12 H5 V7 H11 V12 H15",
-    "balanced": BALANCED,
-    "performance": "M1 13 H2 V3 H5 V13 H8 V3 H11 V13 H14 V3 H15",
+    "power-saver": pulse("M1 12 H5 V7 H11 V12 H15"),
+    "balanced": pulse(BALANCED),
+    "performance": pulse("M1 13 H2 V3 H5 V13 H8 V3 H11 V13 H14 V3 H15"),
+    "custom": merge(pulse("M1 9 H4 V3 H9 V9 H15"),
+                    svg(rects((0, 12, 16, 2), (9, 11, 4, 4)), 16)),
 }
 
 
@@ -88,10 +104,10 @@ def main() -> None:
     for path, content in ((app, APP), (sym, SYMBOLIC)):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content)
-    for category, d in PROFILE_ICONS.items():
+    for category, content in PROFILE_ICONS.items():
         path = ICONS / "symbolic" / "status" / f"pulsgeber-{category}-symbolic.svg"
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(pulse(d))
+        path.write_text(content)
     for size in (64, 128, 256):
         png = ICONS / f"{size}x{size}" / "apps" / f"{ICON_NAME}.png"
         png.parent.mkdir(parents=True, exist_ok=True)

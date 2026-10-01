@@ -10,6 +10,12 @@ Die Erweiterung zeigt das Icon im Info-Dialog ihrer Einstellungen (`Adw.AboutDia
 
 Für Pille, Menü und obere Leiste zeichnet `generate_icons.py` drei eigene symbolische Icons nach `extension/icons/hicolor/symbolic/status/`: `pulsgeber-power-saver-symbolic` (ein flacher, breiter Puls), `pulsgeber-balanced-symbolic` (zwei Pulse, wie das symbolische App-Icon) und `pulsgeber-performance-symbolic` (drei dichte, hohe Pulse). Sie ersetzen GNOMEs Symbole für die Energiemodi.
 
+Seit Version 0.4 gibt es ein viertes Symbol, `pulsgeber-custom-symbolic`, für Profile, die man selbst in TCC angelegt hat: ein Puls über einem Schieberegler, also „selbst eingestellt“. tccd führt solche Profile getrennt von seinen eigenen (`GetCustomProfilesJSON`), deshalb bekommen sie das Symbol automatisch statt eines aus Takt und Lüfter geratenen Pulses. Zur Wahl standen drei Entwürfe in `docs/icon-drafts/custom/` (Vorschau `preview.png`):
+
+- **A – unregelmäßig:** drei Pulse in verschiedener Höhe, ein selbst gesetzter Rhythmus. Nah an der Pulsfamilie, bei 16 px aber leicht mit „Leistung“ zu verwechseln.
+- **B – Regler (gewählt):** ein Puls über einem Schieberegler mit Knopf. Am deutlichsten von den drei Standardsymbolen unterscheidbar.
+- **C – Plus:** ein Puls mit Pluszeichen, „selbst angelegt“. Ein Plus steht in GNOME aber meist für „hinzufügen“ und wirkt im Menü wie eine Schaltfläche.
+
 Die Pulse bestehen aus gefüllten, 2 px breiten Rechtecken auf ganzen Pixeln, nicht aus Linien: GNOME Shell färbt symbolische Icons ein, indem es die Füllung ersetzt, ein `stroke` bliebe dunkel (`#2e3436` auf dunklem Grund). Aus demselben Grund sind die Kanten nicht gerundet.
 
 ## Regeln

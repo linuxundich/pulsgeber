@@ -31,10 +31,18 @@ async function callJson(method) {
 }
 
 /**
- * @returns {Promise<object[]>} default and custom profiles, as tccd lists them
+ * @returns {Promise<object[]>} default and custom profiles, as tccd lists
+ *   them, each with `isCustom` set for profiles the user created
  */
-export function getProfiles() {
-    return callJson('GetProfilesJSON');
+export async function getProfiles() {
+    // Profiles that do not ship with the TCC were created by the user;
+    // tccd marks them only by listing them separately.
+    const [profiles, defaults] = await Promise.all([
+        callJson('GetProfilesJSON'),
+        callJson('GetDefaultProfilesJSON'),
+    ]);
+    const defaultIds = new Set(defaults.map(p => p.id));
+    return profiles.map(p => ({...p, isCustom: !defaultIds.has(p.id)}));
 }
 
 /**
@@ -76,13 +84,17 @@ export function watch(callback) {
         () => callback(false));
 }
 
-// Which of the three pulse icons (extension/icons, modelled on GNOME's three
-// power modes) fits a profile. tccd profiles have no such category, so this
-// guesses from the CPU and fan settings; the user can pin a category per
+// Which of the pulse icons (extension/icons) fits a profile: three modelled
+// on GNOME's power modes, a fourth for profiles the user created in the TCC.
+// tccd profiles have no such category, so the TCC's own profiles get one
+// guessed from their CPU and fan settings; the user can pin a category per
 // profile in the preferences.
-export const CATEGORIES = ['performance', 'balanced', 'power-saver'];
+export const CATEGORIES = ['performance', 'balanced', 'power-saver', 'custom'];
 
 export function guessCategory(profile, profiles) {
+    if (profile.isCustom)
+        return 'custom';
+
     const cpu = profile.cpu ?? {};
     const fan = profile.fan?.fanProfile ?? '';
     const hwMax = Math.max(...profiles.map(p => p.cpu?.scalingMaxFrequency ?? 0));

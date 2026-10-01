@@ -16,7 +16,7 @@
     </key>
     <key name="profile-categories" type="a{ss}">
       <default>{}</default>
-      <summary>Icon per profile id: performance, balanced or power-saver; missing ids are guessed</summary>
+      <summary>Icon per profile id: performance, balanced, power-saver or custom; missing ids are guessed</summary>
     </key>
     <key name="poll-interval" type="u">
       <range min="1" max="60"/>

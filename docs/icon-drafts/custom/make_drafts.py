@@ -13,18 +13,7 @@ from pathlib import Path
 
 OUT = Path(__file__).resolve().parent
 sys.path.insert(0, str(OUT.parents[2] / "build-aux" / "icons"))
-from generate_icons import SYM, pulse, svg  # noqa: E402
-
-
-def rects(*boxes: tuple) -> str:
-    return "".join(f'  <rect x="{x}" y="{y}" width="{w}" height="{h}" fill="{SYM}"/>\n'
-                   for x, y, w, h in boxes)
-
-
-def merge(*svgs: str) -> str:
-    """Fügt die Körper mehrerer 16-px-SVGs zu einem zusammen."""
-    body = "".join(s.split(">\n", 1)[1].rsplit("</svg>", 1)[0] for s in svgs)
-    return svg(body, 16)
+from generate_icons import merge, pulse, rects, svg  # noqa: E402
 
 
 DRAFTS = {

@@ -2,3 +2,4 @@
 *.mo
 extension/schemas/gschemas.compiled
 prompt.md
+__pycache__/

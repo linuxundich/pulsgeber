@@ -22,6 +22,7 @@ function categoryLabel(category) {
         'performance': _('Performance'),
         'balanced': _('Balanced'),
         'power-saver': _('Power Saver'),
+        'custom': _('Custom Profile'),
     }[category];
 }
 
