@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: pulsgeber@linuxundich.de 0.2.0\n"
+"Project-Id-Version: pulsgeber@linuxundich.de 0.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 23:02+0200\n"
+"POT-Creation-Date: 2026-10-02 00:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,43 +17,43 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension/extension.js:25 extension/extension.js:189
+#: extension/extension.js:26 extension/extension.js:190
 msgid "TCC Profile"
 msgstr ""
 
-#: extension/extension.js:27
+#: extension/extension.js:28
 msgid "Open TCC profile menu"
 msgstr ""
 
-#: extension/extension.js:43
+#: extension/extension.js:44
 msgid "TUXEDO Control Center"
 msgstr ""
 
-#: extension/extension.js:201
+#: extension/extension.js:202
 msgid "Until the power source changes"
-msgstr ""
-
-#: extension/extension.js:203
-#, javascript-format
-msgid "Until on AC power, then %s"
 msgstr ""
 
 #: extension/extension.js:204
 #, javascript-format
+msgid "Until on AC power, then %s"
+msgstr ""
+
+#: extension/extension.js:205
+#, javascript-format
 msgid "Until on battery, then %s"
 msgstr ""
 
-#: extension/extension.js:210
+#: extension/extension.js:211
 #, javascript-format
 msgid "On battery, default: %s"
 msgstr ""
 
-#: extension/extension.js:210
+#: extension/extension.js:211
 #, javascript-format
 msgid "On AC power, default: %s"
 msgstr ""
 
-#: extension/extension.js:241
+#: extension/extension.js:242
 msgid "Could not switch TCC profile"
 msgstr ""
 

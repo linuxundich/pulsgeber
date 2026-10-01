@@ -10,6 +10,8 @@ fixes on top of it. The version lives in `version-name` in
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-02
+
 ### Changed
 - The option "Hide TCC Tray Icon" is now called "Don’t Start TCC Tray" and
   says what it does: it removes the tray's autostart entry and ends the
