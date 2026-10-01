@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <mask id="m"><rect width="16" height="16" fill="#fff"/>
+    <path d="M8 12 L12 2" stroke="#000" stroke-width="3" stroke-linecap="round"/></mask>
+  <path d="M6 1.5 H10 L13 13 H3 Z" fill="#2e3436" stroke="#2e3436" stroke-linejoin="round"
+        mask="url(#m)"/>
+  <path d="M8 11.5 L12 2" stroke="#2e3436" stroke-width="1.5" stroke-linecap="round"/>
+  <rect x="1.5" y="13" width="13" height="2.5" rx="1" fill="#2e3436"/>
+</svg>
