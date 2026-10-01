@@ -73,10 +73,12 @@ are just front ends to the same service. You only need the app to create and
 edit profiles (`/etc/tcc/profiles`) and to assign them to AC power and
 battery.
 
-Besides its profile menu, the tray only registers the shortcut Super+Alt+F6
-(sent by the Control Center key on many TUXEDO keyboards), restarts itself
-after an update, and nudges the display after changes to the YCbCr 4:2:0
-workaround — the latter with `xset`, which has no effect on Wayland.
+Besides its profile menu, the tray only tries to register the shortcut
+Super+Alt+F6 (sent by the Control Center key on many TUXEDO keyboards), which
+fails on GNOME under Wayland (“Failed to register global shortcut” in the
+journal), restarts itself after an update, and nudges the display after
+changes to the YCbCr 4:2:0 workaround — the latter with `xset`, which has no
+effect on Wayland either.
 
 The option “Don’t Start TCC Tray” does the same as “Tray autostart” in the
 tray's own menu: it deletes
@@ -84,6 +86,14 @@ tray's own menu: it deletes
 from the TCC installation. On top of that it ends or starts the running tray,
 so the change applies right away. An open TCC window belongs to the same
 process and closes as well.
+
+That alone is not enough, though: every start of the TCC app creates a tray
+icon too, and closing its window leaves the process running in the tray. So
+while the option is on, Pulsgeber ends the TCC app a moment after its last
+window closes, as if it had no tray. Electron swallows the first SIGTERM to
+attempt a graceful shutdown, which TCC vetoes while its tray is up, so
+Pulsgeber sends a second one after three seconds if the process is still
+there.
 
 ## TCC and power-profiles-daemon
 

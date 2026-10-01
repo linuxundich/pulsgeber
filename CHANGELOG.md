@@ -27,6 +27,14 @@ fixes on top of it. The version lives in `version-name` in
   use of AI during development.
 
 ### Fixed
+- With “Don’t Start TCC Tray” on, the TCC tray icon still came back whenever
+  the TCC app had been opened: every start of the app creates a tray icon,
+  and closing the window leaves the process running in the tray. Pulsgeber now
+  ends the TCC app a moment after its last window closes while the option is
+  on, and turning the option on also ends a TCC app that was started without
+  `--tray`. Electron swallows the first SIGTERM (TCC vetoes the graceful
+  shutdown while its tray is up), so a second one follows after three seconds
+  if the process is still there.
 - The preferences showed no icons next to the profiles: the icon theme only
   searches the directories hicolor lists, and `symbolic/status` is not one of
   them. The pulse icons are now loaded as files there too, as in the Shell.

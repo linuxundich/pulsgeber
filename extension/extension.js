@@ -11,6 +11,7 @@ import {QuickMenuToggle, SystemIndicator} from 'resource:///org/gnome/shell/ui/q
 import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 
 import * as Tccd from './tccd.js';
+import * as Tray from './tray.js';
 
 const TCC_DESKTOP_FILE = 'tuxedo-control-center.desktop';
 
@@ -330,14 +331,63 @@ class PowerModeHider {
     }
 }
 
+// Every start of the TCC app also creates a tray icon, and closing its
+// window leaves the process running in the tray. While the tray is turned
+// off in the preferences ("Don't Start TCC Tray", no autostart entry), end
+// the app once its last window is gone, as if it had no tray.
+const QUIT_DELAY_SECONDS = 2;
+
+class TccQuitter {
+    constructor() {
+        this._timeouts = new Set();
+        global.display.connectObject('window-created',
+            (display, window) => this._track(window), this);
+        for (const actor of global.get_window_actors())
+            this._track(actor.get_meta_window());
+    }
+
+    _track(window) {
+        const pid = Tray.tccMainPid(window.get_pid());
+        if (pid)
+            window.connectObject('unmanaged', () => this._onClosed(pid), this);
+    }
+
+    _onClosed(pid) {
+        if (!Tray.isAvailable() || Tray.isEnabled())
+            return;
+        // Wait a moment: TCC may replace a window by another one.
+        const id = GLib.timeout_add_seconds(GLib.PRIORITY_LOW, QUIT_DELAY_SECONDS, () => {
+            this._timeouts.delete(id);
+            const open = global.get_window_actors().some(actor =>
+                Tray.tccMainPid(actor.get_meta_window().get_pid()) === pid);
+            if (!open && Tray.tccMainPid(pid) === pid)
+                Tray.terminate(pid);
+            return GLib.SOURCE_REMOVE;
+        });
+        this._timeouts.add(id);
+    }
+
+    destroy() {
+        global.display.disconnectObject(this);
+        for (const actor of global.get_window_actors())
+            actor.get_meta_window().disconnectObject(this);
+        for (const id of this._timeouts)
+            GLib.source_remove(id);
+        this._timeouts.clear();
+    }
+}
+
 export default class PulsgeberExtension extends Extension {
     enable() {
         this._indicator = new Indicator(this);
         Main.panel.statusArea.quickSettings.addExternalIndicator(this._indicator);
         this._powerModeHider = new PowerModeHider(this.getSettings());
+        this._tccQuitter = new TccQuitter();
     }
 
     disable() {
+        this._tccQuitter.destroy();
+        this._tccQuitter = null;
         this._powerModeHider.destroy();
         this._powerModeHider = null;
         this._indicator.destroy();
