@@ -20,9 +20,11 @@ fixes on top of it. The version lives in `version-name` in
   picked profile lasts, that only the tccd service is needed, and the
   optional switches for GNOME's power mode, power-profiles-daemon and the
   TCC tray. Before, they still described version 0.1.0.
-- README brought up to date: all settings, how new and deleted TCC profiles
-  are handled, install from GitHub, what it was tested with, and an overview
-  of the source files.
+- README rewritten in English and brought up to date: two screenshots (WebP),
+  all settings, how new and deleted TCC profiles are handled, install from
+  GitHub, tested on Arch Linux (GNOME Shell 50.5, TCC 3.0.10, InfinityBook
+  S 17 Gen6), an overview of the source files, and a section declaring the
+  use of AI during development.
 
 ### Fixed
 - The preferences showed no icons next to the profiles: the icon theme only

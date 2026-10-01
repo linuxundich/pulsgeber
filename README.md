@@ -1,49 +1,109 @@
+<p align="center">
+  <img src="extension/icons/hicolor/128x128/apps/de.linuxundich.Pulsgeber.png" alt="Pulsgeber icon" width="128" height="128">
+</p>
+
 # Pulsgeber
 
-GNOME-Shell-Erweiterung, die die Profile des [TUXEDO Control Centers](https://github.com/tuxedocomputers/tuxedo-control-center) über eine Pille in den Schnelleinstellungen umschaltet. Für GNOME 50 und 51.
+A GNOME Shell extension that switches the profiles of the
+[TUXEDO Control Center](https://github.com/tuxedocomputers/tuxedo-control-center)
+(TCC) from a toggle in the Quick Settings. For GNOME 50 and 51.
 
-Inoffiziell, keine Verbindung zu TUXEDO Computers.
+Unofficial, not affiliated with TUXEDO Computers.
 
-![Icon](docs/icon-preview.png)
+<p align="center">
+  <img src="docs/screenshots/quick-settings.webp" alt="The “TCC Profile” toggle in the GNOME Quick Settings" width="49%">
+  <img src="docs/screenshots/profile-menu.webp" alt="The profile menu of the toggle, with “Cool and breezy” picked by hand" width="49%">
+</p>
 
-## Funktionen
+The German word *Pulsgeber* means pulse generator, the device that sets the
+clock — a nod to CPU clock speeds, and to the profiles setting the pace of
+the machine.
 
-**Pille in den Schnelleinstellungen**
+## Features
 
-- Pille „TCC-Profil“ mit dem aktiven Profil als Untertitel und allen Profilen im Menü.
-- Ein im Menü gewähltes Profil gilt wie im Tray-Menü von TCC nur bis zum nächsten Wechsel der Stromquelle. Die Zuordnung der Profile zu Netz- und Akkubetrieb in TCC bleibt unverändert.
-- Die Pille ist eingeschaltet, solange ein anderes Profil läuft als das, das TCC der aktuellen Stromquelle zuordnet. Ein Klick schaltet zurück auf dieses Standardprofil, der nächste wieder auf das zuletzt gewählte, wie beim Energiemodus-Schalter von GNOME.
-- Solange ein Profil von Hand gewählt ist, nennt die Kopfzeile des Menüs, wann es endet und was danach kommt, etwa „Bis Akkubetrieb, dann Cool and breezy“.
-- Eigene Puls-Symbole je Profil: ein flacher Puls für Energiesparen, zwei für Ausgeglichen, drei dichte für Leistung. Optional erscheint das Symbol auch in der oberen Leiste, solange ein abweichendes Profil aktiv ist.
-- Profile, die man in TCC neu anlegt, stehen beim nächsten Öffnen im Menü. Ihr Symbol rät Pulsgeber aus Takt, Lüfter und EPP, man kann es in den Einstellungen festlegen. Einstellungen zu gelöschten Profilen räumt Pulsgeber beim Öffnen der Einstellungen auf.
+**Quick Settings toggle**
 
-**Einstellungen**
+- A “TCC Profile” toggle showing the active profile as its subtitle, with all
+  profiles in its menu.
+- A profile picked from the menu lasts until the power source changes, just
+  like in TCC's own tray menu. TCC's assignment of profiles to AC power and
+  battery stays untouched.
+- The toggle is on while a profile other than the one TCC assigns to the
+  current power source is active. Clicking it switches back to that default
+  profile, the next click to the last picked one — the same behaviour as
+  GNOME's own power mode toggle.
+- While a profile is picked by hand, the menu header says until when it lasts
+  and what comes next, e.g. “Until on battery, then Cool and breezy”.
+- Pulse icons per profile: one low pulse for power saving, two for balanced,
+  three dense ones for performance. Optionally the icon also shows in the top
+  bar while a non-default profile is active.
+- Profiles created in TCC show up in the menu the next time it opens; their
+  icon is guessed from their CPU and fan settings and can be pinned in the
+  preferences. Settings of deleted profiles are cleaned up when the
+  preferences open.
 
-- Schnelleinstellungen: Symbol in der oberen Leiste, „Tray des TCC nicht starten“, Prüfintervall.
-- Energiemodus von GNOME: „Energiemodus-Schalter ausblenden“ (Standard an) und „power-profiles-daemon abschalten“, siehe [TCC und power-profiles-daemon](#tcc-und-power-profiles-daemon).
-- Profile: je Profil im Menü anzeigen oder ausblenden und das Symbol wählen (automatisch, Leistung, Ausgeglichen, Energiesparmodus). Standardprofile lassen sich nicht ausblenden.
-- Link zum TUXEDO Control Center und ein Info-Dialog.
+**Preferences**
 
-Deutsch und Englisch.
+- Quick Settings: top bar icon, “Don’t Start TCC Tray”, check interval.
+- GNOME power mode: “Hide Power Mode Toggle” (on by default) and “Turn Off
+  power-profiles-daemon”, see
+  [TCC and power-profiles-daemon](#tcc-and-power-profiles-daemon).
+- Profiles: show or hide each profile in the menu and pick its icon
+  (automatic, performance, balanced, power saver). Default profiles can't be
+  hidden.
+- A link to the TUXEDO Control Center and an About dialog.
 
-## Voraussetzungen
+Available in English and German.
 
-- GNOME 50 oder 51.
-- Ein laufender `tccd` (Paket `tuxedo-control-center`).
+## Requirements
 
-Die Erweiterung spricht `tccd` über den System-Bus an (`com.tuxedocomputers.tccd`), Root-Rechte braucht sie nicht. Weil `tccd` Profilwechsel nicht meldet, fragt sie das aktive Profil regelmäßig ab (Standard: alle 5 Sekunden).
+- GNOME 50 or 51.
+- A running `tccd` (package `tuxedo-control-center`).
 
-## Braucht es das TCC-Programm?
+Pulsgeber talks to `tccd` over the system bus (`com.tuxedocomputers.tccd`) and
+needs no root privileges. Since `tccd` sends no signal when the active profile
+changes, Pulsgeber polls it (every 5 seconds by default).
 
-Nein. Profile schaltet und überwacht der Systemdienst `tccd`, den das Paket als `tccd.service` beim Booten startet; mit ihm spricht Pulsgeber. Das Programm „TUXEDO Control Center“ und sein Tray-Symbol (`tuxedo-control-center --tray`) sind nur Oberflächen für denselben Dienst. Gebraucht wird das Programm nur, um Profile anzulegen und zu bearbeiten (`/etc/tcc/profiles`) und sie Netz- und Akkubetrieb zuzuordnen.
+## Do I need the TCC app?
 
-Die Option „Tray des TCC nicht starten“ macht dasselbe wie „Tray autostart“ im Menü des TCC-Symbols: Sie löscht `~/.config/autostart/tuxedo-control-center-tray.desktop` bzw. kopiert die Datei aus der TCC-Installation zurück. Zusätzlich beendet sie das laufende Tray-Symbol bzw. startet es, damit die Änderung sofort gilt. Ein offenes TCC-Fenster gehört zum selben Prozess und schließt sich dabei mit.
+No. Profiles are applied and enforced by the system service `tccd`, which the
+package starts at boot as `tccd.service`; that is what Pulsgeber talks to. The
+TUXEDO Control Center app and its tray icon (`tuxedo-control-center --tray`)
+are just front ends to the same service. You only need the app to create and
+edit profiles (`/etc/tcc/profiles`) and to assign them to AC power and
+battery.
 
-## TCC und power-profiles-daemon
+Besides its profile menu, the tray only registers the shortcut Super+Alt+F6
+(sent by the Control Center key on many TUXEDO keyboards), restarts itself
+after an update, and nudges the display after changes to the YCbCr 4:2:0
+workaround — the latter with `xset`, which has no effect on Wayland.
 
-GNOMEs Schalter „Energiemodus“ gehört zum power-profiles-daemon (ppd). ppd und `tccd` ergänzen sich nicht, sie schreiben dieselben CPU-Einstellungen (Governor und `energy_performance_preference`, auf AMD auch Boost und Mindesttakt). `tccd` prüft diese Werte alle 10 Sekunden und schreibt sein Profil zurück, sobald sie abweichen. Ein Wechsel im GNOME-Schalter wirkt deshalb nur wenige Sekunden, danach zeigt der Schalter einen Modus an, der nicht mehr gilt. Auf einem InfinityBook mit intel_pstate: ppd setzt EPP `power`, nach rund 5 Sekunden steht wieder `balance_performance` aus dem TCC-Profil.
+The option “Don’t Start TCC Tray” does the same as “Tray autostart” in the
+tray's own menu: it deletes
+`~/.config/autostart/tuxedo-control-center-tray.desktop`, or copies it back
+from the TCC installation. On top of that it ends or starts the running tray,
+so the change applies right away. An open TCC window belongs to the same
+process and closes as well.
 
-TUXEDO OS liefert ppd gar nicht erst aus, und `tccd` kennt ppd nicht ([Issue #422](https://github.com/tuxedocomputers/tuxedo-control-center/issues/422)). Pulsgeber blendet den GNOME-Schalter deshalb standardmäßig aus, solange `tccd` läuft. Sauberer ist es, ppd ganz abzuschalten. Das geht in den Einstellungen unter „Energiemodus von GNOME“ → „power-profiles-daemon abschalten“: Pulsgeber maskiert und stoppt den Dienst dann über die D-Bus-Schnittstelle von systemd, polkit fragt dafür einmal nach dem Administratorpasswort. Zurückschalten demaskiert und startet ihn wieder. Von Hand entspricht das:
+## TCC and power-profiles-daemon
+
+GNOME's power mode toggle belongs to power-profiles-daemon (ppd). ppd and
+`tccd` don't complement each other, they write the same CPU settings
+(governor and `energy_performance_preference`, on AMD also boost and minimum
+frequency). `tccd` checks these values every 10 seconds and puts its profile
+back as soon as they differ. A change in GNOME's toggle therefore only lasts a
+few seconds, after which the toggle shows a mode that no longer applies. On an
+InfinityBook S 17 Gen6 with intel_pstate: ppd sets EPP to `power`, about
+5 seconds later it is back to `balance_performance` from the TCC profile.
+
+TUXEDO OS doesn't ship ppd at all, and `tccd` doesn't know about it
+([issue #422](https://github.com/tuxedocomputers/tuxedo-control-center/issues/422)).
+So Pulsgeber hides GNOME's toggle by default while `tccd` is running. The
+cleaner way is to turn ppd off entirely, under “GNOME Power Mode” → “Turn Off
+power-profiles-daemon” in the preferences: Pulsgeber then masks and stops the
+service through systemd's D-Bus API, and polkit asks once for the
+administrator password. Switching back unmasks and starts it again. By hand,
+that is:
 
 ```bash
 sudo systemctl mask --now power-profiles-daemon.service
@@ -53,38 +113,55 @@ sudo systemctl mask --now power-profiles-daemon.service
 sudo systemctl unmask power-profiles-daemon.service && sudo systemctl start power-profiles-daemon.service
 ```
 
-## Installation aus dem Quellcode
+## Installing from source
 
 ```bash
 git clone https://github.com/linuxundich/pulsgeber.git && cd pulsgeber && make install
 ```
 
-Unter Wayland lädt GNOME Shell neue Erweiterungen erst nach dem nächsten Anmelden, danach:
+On Wayland, GNOME Shell only picks up new extensions after logging in again,
+then:
 
 ```bash
 gnome-extensions enable pulsgeber@linuxundich.de
 ```
 
-Weitere Ziele: `make zip` (Paket für extensions.gnome.org), `make pot` (Übersetzungsvorlage und `po/de.po` aktualisieren), `make nested` (Test in einer verschachtelten Shell).
+Other targets: `make zip` (package for extensions.gnome.org), `make pot`
+(update the translation template and `po/de.po`), `make nested` (test in a
+nested shell).
 
-Getestet mit GNOME Shell 50.5 und TUXEDO Control Center 3.0.10 auf Arch Linux. GNOME 51 ist eingetragen, aber noch nicht getestet.
+Tested on Arch Linux with GNOME Shell 50.5 and TUXEDO Control Center 3.0.10 on
+a TUXEDO InfinityBook S 17 Gen6. GNOME 51 is declared but not tested yet.
 
-## Aufbau
+## Layout
 
-| Datei | Aufgabe |
+| File | Purpose |
 |---|---|
-| `extension/extension.js` | Pille, Menü, Symbol in der oberen Leiste, Ausblenden des GNOME-Energiemodus |
-| `extension/prefs.js` | Einstellungen (libadwaita) und Info-Dialog |
-| `extension/tccd.js` | D-Bus-Zugriff auf `tccd`, Symbolwahl je Profil |
-| `extension/ppd.js` | power-profiles-daemon über systemd maskieren und demaskieren |
-| `extension/tray.js` | Autostart und Prozess des TCC-Trays |
-| `build-aux/icons/generate_icons.py` | erzeugt App-Icon und Puls-Symbole, Hintergründe in [docs/icon.md](docs/icon.md) |
-| `po/` | Übersetzungen |
+| `extension/extension.js` | toggle, menu, top bar icon, hiding GNOME's power mode toggle |
+| `extension/prefs.js` | preferences (libadwaita) and About dialog |
+| `extension/tccd.js` | D-Bus access to `tccd`, icon guess per profile |
+| `extension/ppd.js` | masking and unmasking power-profiles-daemon through systemd |
+| `extension/tray.js` | autostart entry and process of the TCC tray |
+| `build-aux/icons/generate_icons.py` | generates the app icon and the pulse icons; background in [docs/icon.md](docs/icon.md) (German) |
+| `po/` | translations |
 
-## Versionen
+## Use of AI
 
-Die Versionsnummer steht als `version-name` in `extension/metadata.json`, jede Version ist in Git als `vX.Y.Z` getaggt. Änderungen stehen im [CHANGELOG](CHANGELOG.md).
+Pulsgeber was developed with the help of AI. Most of the code, the icons, the
+translations and the documentation were written by Claude (Anthropic) in
+Claude Code, directed by me: I set the requirements, made the design
+decisions (name, icon, behaviour), reviewed the results and tested the
+extension on my own TUXEDO notebook. The research on how `tccd`,
+power-profiles-daemon and the TCC tray interact was also done with AI
+assistance and checked against the running system. Commits written with AI
+assistance carry a `Co-Authored-By` line.
 
-## Lizenz
+## Versions
+
+The version lives in `version-name` in `extension/metadata.json`; every
+release is tagged `vX.Y.Z` in Git. Changes are listed in the
+[CHANGELOG](CHANGELOG.md).
+
+## License
 
 GPL-3.0-or-later
