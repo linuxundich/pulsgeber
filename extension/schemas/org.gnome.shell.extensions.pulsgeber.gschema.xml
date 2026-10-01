@@ -6,6 +6,10 @@
       <default>true</default>
       <summary>Show an icon in the top bar while a profile other than the default is active</summary>
     </key>
+    <key name="hide-power-mode" type="b">
+      <default>true</default>
+      <summary>Hide GNOME's power mode toggle while the TUXEDO Control Center service is running</summary>
+    </key>
     <key name="hidden-profiles" type="as">
       <default>[]</default>
       <summary>Ids of profiles not listed in the menu</summary>

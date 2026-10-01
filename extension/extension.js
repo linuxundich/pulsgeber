@@ -23,12 +23,13 @@ class ProfileToggle extends QuickMenuToggle {
     _init(extension) {
         super._init({
             title: _('TCC Profile'),
-            iconName: Tccd.iconForCategory('balanced'),
+            gicon: Tccd.giconForCategory(extension.path, 'balanced'),
             menuButtonAccessibleName: _('Open TCC profile menu'),
             visible: false,
         });
 
         this._settings = extension.getSettings();
+        this._icon = category => Tccd.giconForCategory(extension.path, category);
         this._cancellable = new Gio.Cancellable();
         this._profiles = [];
         this._activeId = null;
@@ -155,7 +156,7 @@ class ProfileToggle extends QuickMenuToggle {
 
         for (const profile of this._visibleProfiles()) {
             const item = new PopupMenu.PopupImageMenuItem(profile.name,
-                Tccd.iconForCategory(this._categoryOf(profile)));
+                this._icon(this._categoryOf(profile)));
             item.connect('activate', () => this._activate(profile.id));
             this._items.set(profile.id, item);
             this._profileSection.addMenuItem(item);
@@ -178,13 +179,13 @@ class ProfileToggle extends QuickMenuToggle {
         const defaultName = this._profileName(this._defaultId);
         this.set({
             subtitle: this._activeName ?? null,
-            iconName: Tccd.iconForCategory(category),
+            gicon: this._icon(category),
             // "On" means: a profile other than the one TCC assigns to the
             // current power source is active, as with GNOME's power mode
             // toggle, which is on whenever it is not "Balanced".
             checked: this._activeId !== this._defaultId,
         });
-        this.menu.setHeader(Tccd.iconForCategory(category), _('TCC Profile'),
+        this.menu.setHeader(this._icon(category), _('TCC Profile'),
             defaultName
                 ? (this._onBattery
                     ? _('On battery, default: %s') : _('On AC power, default: %s'))
@@ -248,7 +249,7 @@ class Indicator extends SystemIndicator {
         this._toggle = new ProfileToggle(extension);
         this.quickSettingsItems.push(this._toggle);
 
-        this._toggle.bind_property('icon-name', this._indicator, 'icon-name',
+        this._toggle.bind_property('gicon', this._indicator, 'gicon',
             GObject.BindingFlags.SYNC_CREATE);
         this._syncIndicator = () => {
             this._indicator.visible = this._toggle.visible && this._toggle.checked &&
@@ -268,13 +269,63 @@ class Indicator extends SystemIndicator {
     }
 });
 
+// power-profiles-daemon and tccd write the same CPU settings (governor, EPP);
+// tccd checks them every 10 seconds and puts its profile back. GNOME's own
+// power mode toggle then shows a mode that no longer applies, so it can be
+// hidden while tccd is running.
+class PowerModeHider {
+    constructor(settings) {
+        this._settings = settings;
+        this._ppd = Main.panel.statusArea.quickSettings._powerProfiles;
+        this._widgets = [this._ppd, ...this._ppd?.quickSettingsItems ?? []];
+        for (const widget of this._widgets)
+            widget.connectObject('notify::visible', () => this._sync(), this);
+        this._settings.connectObject('changed::hide-power-mode', () => this._sync(), this);
+        this._watchId = Tccd.watch(running => {
+            this._tccdRunning = running;
+            this._sync();
+        });
+    }
+
+    get _hide() {
+        return this._tccdRunning && this._settings.get_boolean('hide-power-mode');
+    }
+
+    _sync() {
+        if (this._hide) {
+            for (const widget of this._widgets)
+                widget.visible = false;
+        } else {
+            this._restore();
+        }
+    }
+
+    _restore() {
+        // Let GNOME's own code decide again whether its toggle is shown.
+        const [indicator, toggle] = this._widgets;
+        toggle?._sync?.();
+        indicator?._syncIndicatorsVisible?.();
+    }
+
+    destroy() {
+        Gio.bus_unwatch_name(this._watchId);
+        for (const widget of this._widgets)
+            widget.disconnectObject(this);
+        this._settings.disconnectObject(this);
+        this._restore();
+    }
+}
+
 export default class PulsgeberExtension extends Extension {
     enable() {
         this._indicator = new Indicator(this);
         Main.panel.statusArea.quickSettings.addExternalIndicator(this._indicator);
+        this._powerModeHider = new PowerModeHider(this.getSettings());
     }
 
     disable() {
+        this._powerModeHider.destroy();
+        this._powerModeHider = null;
         this._indicator.destroy();
         this._indicator = null;
     }

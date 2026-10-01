@@ -46,6 +46,13 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
         settings.bind('show-indicator', indicatorRow, 'active', Gio.SettingsBindFlags.DEFAULT);
         general.add(indicatorRow);
 
+        const powerModeRow = new Adw.SwitchRow({
+            title: _('Hide GNOME Power Mode'),
+            subtitle: _('The TUXEDO Control Center overrides the power mode within seconds, so its toggle would show a mode that no longer applies'),
+        });
+        settings.bind('hide-power-mode', powerModeRow, 'active', Gio.SettingsBindFlags.DEFAULT);
+        general.add(powerModeRow);
+
         const pollRow = new Adw.SpinRow({
             title: _('Check Interval'),
             subtitle: _('Seconds between checks for changes made in the TUXEDO Control Center'),

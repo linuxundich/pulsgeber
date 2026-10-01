@@ -15,6 +15,7 @@ zeigt.
     python3 build-aux/icons/generate_icons.py
 """
 
+import re
 import subprocess
 from pathlib import Path
 
@@ -50,10 +51,35 @@ APP = svg(f'''  <!-- Gehäuse: Profil, dann Front -->
   <rect x="102" y="70" width="2" height="7" fill="{WHITE}"/>
 ''', 128)
 
+
+def pulse(d: str) -> str:
+    """Zeichnet einen Rechteckpuls (Pfad nur aus M, H und V) als gefüllte,
+    2 px breite Balken. Symbolische Icons müssen gefüllt sein: GNOME färbt sie
+    ein, indem es die Füllung ersetzt, Linien (stroke) blieben dunkel."""
+    start = re.match(r"M\s*([\d.]+)\s+([\d.]+)", d)
+    x, y = float(start[1]), float(start[2])
+    steps = re.findall(r"([HV])\s*([\d.]+)", d)
+    rects = []
+    for cmd, val in steps:
+        nx, ny = (float(val), y) if cmd == "H" else (x, float(val))
+        rects.append(f'  <rect x="{min(x, nx) - 1:g}" y="{min(y, ny) - 1:g}" '
+                     f'width="{abs(nx - x) + 2:g}" height="{abs(ny - y) + 2:g}" fill="{SYM}"/>')
+        x, y = nx, ny
+    return svg("\n".join(rects) + "\n", 16)
+
+
 # Symbolisch: nur das Taktsignal, zwei volle Pulse.
-SYMBOLIC = svg(f'''  <path d="M1 12 H4 V4 H8 V12 H12 V4 H15" fill="none" stroke="{SYM}"
-        stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-''', 16)
+BALANCED = "M1 12 H4 V4 H8 V12 H12 V4 H15"
+SYMBOLIC = pulse(BALANCED)
+
+# Profilsymbole für Pille, Menü und obere Leiste: je mehr Leistung, desto
+# dichter und höher der Puls. Die Kanten liegen auf ganzen Pixeln, damit die
+# 2 px breiten Linien bei 16 px scharf bleiben.
+PROFILE_ICONS = {
+    "power-saver": "M1 12 H5 V7 H11 V12 H15",
+    "balanced": BALANCED,
+    "performance": "M1 13 H2 V3 H5 V13 H8 V3 H11 V13 H14 V3 H15",
+}
 
 
 def main() -> None:
@@ -62,6 +88,10 @@ def main() -> None:
     for path, content in ((app, APP), (sym, SYMBOLIC)):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content)
+    for category, d in PROFILE_ICONS.items():
+        path = ICONS / "symbolic" / "status" / f"pulsgeber-{category}-symbolic.svg"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(pulse(d))
     for size in (64, 128, 256):
         png = ICONS / f"{size}x{size}" / "apps" / f"{ICON_NAME}.png"
         png.parent.mkdir(parents=True, exist_ok=True)

@@ -9,7 +9,7 @@ all: zip
 
 zip: $(ZIP)
 
-$(ZIP): extension/*.js extension/icons extension/metadata.json extension/schemas/*.xml po/*.po
+$(ZIP): $(shell find extension -type f) po/*.po
 	gnome-extensions pack --force --podir=../po --extra-source=tccd.js --extra-source=icons \
 		--gettext-domain=$(DOMAIN) extension
 

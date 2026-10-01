@@ -6,6 +6,12 @@ Das endgültige Icon erzeugt `build-aux/icons/generate_icons.py` (SVG, symbolisc
 
 Die Erweiterung zeigt das Icon im Info-Dialog ihrer Einstellungen (`Adw.AboutDialog`), dafür hängt `prefs.js` `extension/icons` an den Suchpfad des Icon-Themes.
 
+## Profilsymbole
+
+Für Pille, Menü und obere Leiste zeichnet `generate_icons.py` drei eigene symbolische Icons nach `extension/icons/hicolor/symbolic/status/`: `pulsgeber-power-saver-symbolic` (ein flacher, breiter Puls), `pulsgeber-balanced-symbolic` (zwei Pulse, wie das symbolische App-Icon) und `pulsgeber-performance-symbolic` (drei dichte, hohe Pulse). Sie ersetzen GNOMEs Symbole für die Energiemodi.
+
+Die Pulse bestehen aus gefüllten, 2 px breiten Rechtecken auf ganzen Pixeln, nicht aus Linien: GNOME Shell färbt symbolische Icons ein, indem es die Füllung ersetzt, ein `stroke` bliebe dunkel (`#2e3436` auf dunklem Grund). Aus demselben Grund sind die Kanten nicht gerundet.
+
 ## Regeln
 
 Aufbau nach der [HIG für App-Icons](https://developer.gnome.org/hig/guidelines/app-icons.html):

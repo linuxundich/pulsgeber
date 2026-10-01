@@ -76,9 +76,10 @@ export function watch(callback) {
         () => callback(false));
 }
 
-// Which of GNOME's three power-mode icons fits a profile. tccd profiles have
-// no such category, so this guesses from the CPU and fan settings; the user
-// can pin a category per profile in the preferences.
+// Which of the three pulse icons (extension/icons, modelled on GNOME's three
+// power modes) fits a profile. tccd profiles have no such category, so this
+// guesses from the CPU and fan settings; the user can pin a category per
+// profile in the preferences.
 export const CATEGORIES = ['performance', 'balanced', 'power-saver'];
 
 export function guessCategory(profile, profiles) {
@@ -103,5 +104,15 @@ export function guessCategory(profile, profiles) {
 }
 
 export function iconForCategory(category) {
-    return `power-profile-${category}-symbolic`;
+    return `pulsgeber-${category}-symbolic`;
+}
+
+/**
+ * @param {string} extensionPath directory of the installed extension
+ * @param {string} category one of CATEGORIES
+ * @returns {Gio.Icon} the pulse icon, loaded from the extension directory
+ */
+export function giconForCategory(extensionPath, category) {
+    return Gio.FileIcon.new(Gio.File.new_for_path(
+        `${extensionPath}/icons/hicolor/symbolic/status/${iconForCategory(category)}.svg`));
 }
