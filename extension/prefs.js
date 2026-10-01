@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import Adw from 'gi://Adw';
+import Gdk from 'gi://Gdk';
 import Gio from 'gi://Gio';
 import GioUnix from 'gi://GioUnix';
 import GLib from 'gi://GLib';
@@ -12,6 +13,7 @@ import * as Tccd from './tccd.js';
 
 const TCC_DESKTOP_FILE = 'tuxedo-control-center.desktop';
 const AUTOMATIC = 'auto';
+const ICON_NAME = 'de.linuxundich.Pulsgeber';
 
 function categoryLabel(category) {
     return {
@@ -25,6 +27,8 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
     async fillPreferencesWindow(window) {
         const settings = this.getSettings();
         window.set_search_enabled(true);
+        Gtk.IconTheme.get_for_display(Gdk.Display.get_default())
+            .add_search_path(`${this.path}/icons`);
 
         const page = new Adw.PreferencesPage({
             title: _('General'),
@@ -56,6 +60,7 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
         });
         page.add(profilesGroup);
 
+        const buttons = new Adw.PreferencesGroup();
         const app = GioUnix.DesktopAppInfo.new(TCC_DESKTOP_FILE);
         if (app) {
             const openRow = new Adw.ButtonRow({
@@ -63,10 +68,12 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
                 endIconName: 'adw-external-link-symbolic',
             });
             openRow.connect('activated', () => app.launch([], null));
-            const openGroup = new Adw.PreferencesGroup();
-            openGroup.add(openRow);
-            page.add(openGroup);
+            buttons.add(openRow);
         }
+        const aboutRow = new Adw.ButtonRow({title: _('About Pulsgeber')});
+        aboutRow.connect('activated', () => this._aboutDialog().present(window));
+        buttons.add(aboutRow);
+        page.add(buttons);
 
         let profiles, tccSettings;
         try {
@@ -84,6 +91,24 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
         const stateMap = tccSettings.stateMap ?? {};
         for (const profile of profiles)
             profilesGroup.add(this._profileRow(settings, profile, profiles, stateMap));
+    }
+
+    _aboutDialog() {
+        return new Adw.AboutDialog({
+            applicationName: this.metadata.name,
+            applicationIcon: ICON_NAME,
+            version: this.metadata['version-name'] ?? '',
+            developerName: 'Christoph Langner',
+            developers: ['Christoph Langner https://linuxundich.de'],
+            comments: _('Switches the profiles of the TUXEDO Control Center from the Quick Settings. ' +
+                'Unofficial, not affiliated with TUXEDO Computers.'),
+            website: this.metadata.url,
+            issueUrl: `${this.metadata.url}/issues`,
+            licenseType: Gtk.License.GPL_3_0,
+            copyright: '© 2026 Christoph Langner',
+            // TRANSLATORS: Put your name here, one per line
+            translatorCredits: _('translator-credits'),
+        });
     }
 
     _profileRow(settings, profile, profiles, stateMap) {

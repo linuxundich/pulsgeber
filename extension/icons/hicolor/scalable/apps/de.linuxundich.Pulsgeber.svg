@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <!-- Gehäuse: Profil, dann Front -->
+  <rect x="10" y="28" width="108" height="80" rx="12" fill="#a6a6a6"/>
+  <rect x="10" y="24" width="108" height="80" rx="12" fill="#f2f2f2"/>
+  <!-- Display mit Taktsignal -->
+  <rect x="20" y="34" width="68" height="60" rx="6" fill="#000000"/>
+  <path d="M26 78 H36 V50 H48 V78 H60 V50 H72 V78 H82" fill="none"
+        stroke="#e30016" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+  <!-- Regler: Takt und Leistung -->
+  <circle cx="103" cy="50" r="9" fill="#262626"/>
+  <rect x="102" y="42" width="2" height="7" fill="#ffffff"/>
+  <circle cx="103" cy="78" r="9" fill="#e30016"/>
+  <rect x="102" y="70" width="2" height="7" fill="#ffffff"/>
+</svg>

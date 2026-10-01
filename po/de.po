@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pulsgeber\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 21:27+0200\n"
+"POT-Creation-Date: 2026-10-01 21:47+0200\n"
 "PO-Revision-Date: 2026-10-01 21:27+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -18,105 +18,124 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: extension/extension.js:24 extension/extension.js:186
+#: extension/extension.js:25 extension/extension.js:187
 msgid "TCC Profile"
 msgstr "TCC-Profil"
 
-#: extension/extension.js:26
+#: extension/extension.js:27
 msgid "Open TCC profile menu"
 msgstr "Menü der TCC-Profile öffnen"
 
-#: extension/extension.js:41
+#: extension/extension.js:42
 msgid "TUXEDO Control Center"
 msgstr "TUXEDO Control Center"
 
-#: extension/extension.js:189
+#: extension/extension.js:190
 #, javascript-format
 msgid "On battery, default: %s"
 msgstr "Akkubetrieb, Standard: %s"
 
-#: extension/extension.js:189
+#: extension/extension.js:190
 #, javascript-format
 msgid "On AC power, default: %s"
 msgstr "Netzbetrieb, Standard: %s"
 
-#: extension/extension.js:225
+#: extension/extension.js:226
 msgid "Could not switch TCC profile"
 msgstr "TCC-Profil konnte nicht gewechselt werden"
 
-#: extension/prefs.js:17
+#: extension/prefs.js:20
 msgid "Performance"
 msgstr "Leistung"
 
-#: extension/prefs.js:18
+#: extension/prefs.js:21
 msgid "Balanced"
 msgstr "Ausgeglichen"
 
-#: extension/prefs.js:19
+#: extension/prefs.js:22
 msgid "Power Saver"
 msgstr "Energiesparmodus"
 
-#: extension/prefs.js:29
+#: extension/prefs.js:34
 msgid "General"
 msgstr "Allgemein"
 
-#: extension/prefs.js:34
+#: extension/prefs.js:39
 msgid "Quick Settings"
 msgstr "Schnelleinstellungen"
 
-#: extension/prefs.js:38
+#: extension/prefs.js:43
 msgid "Top Bar Icon"
 msgstr "Symbol in der oberen Leiste"
 
-#: extension/prefs.js:39
+#: extension/prefs.js:44
 msgid "Show the profile icon while a profile other than the default is active"
-msgstr "Das Profilsymbol anzeigen, solange ein anderes als das Standardprofil aktiv ist"
+msgstr ""
+"Das Profilsymbol anzeigen, solange ein anderes als das Standardprofil aktiv "
+"ist"
 
-#: extension/prefs.js:45
+#: extension/prefs.js:50
 msgid "Check Interval"
 msgstr "Prüfintervall"
 
-#: extension/prefs.js:46
+#: extension/prefs.js:51
 msgid "Seconds between checks for changes made in the TUXEDO Control Center"
-msgstr "Sekunden zwischen zwei Prüfungen auf Änderungen im TUXEDO Control Center"
+msgstr ""
+"Sekunden zwischen zwei Prüfungen auf Änderungen im TUXEDO Control Center"
 
-#: extension/prefs.js:53
+#: extension/prefs.js:58
 msgid "Profiles"
 msgstr "Profile"
 
-#: extension/prefs.js:54
+#: extension/prefs.js:59
 msgid "Profiles are created and edited in the TUXEDO Control Center."
 msgstr "Profile legen Sie im TUXEDO Control Center an und bearbeiten sie dort."
 
-#: extension/prefs.js:61
+#: extension/prefs.js:67
 msgid "Open TUXEDO Control Center"
 msgstr "TUXEDO Control Center öffnen"
 
-#: extension/prefs.js:75
+#: extension/prefs.js:73
+msgid "About Pulsgeber"
+msgstr "Info zu Pulsgeber"
+
+#: extension/prefs.js:83
 msgid "TUXEDO Control Center service not reachable"
 msgstr "Dienst des TUXEDO Control Centers nicht erreichbar"
 
-#: extension/prefs.js:91
+#: extension/prefs.js:103
+msgid ""
+"Switches the profiles of the TUXEDO Control Center from the Quick Settings. "
+"Unofficial, not affiliated with TUXEDO Computers."
+msgstr ""
+"Schaltet die Profile des TUXEDO Control Centers in den Schnelleinstellungen um. "
+"Inoffiziell, keine Verbindung zu TUXEDO Computers."
+
+#: extension/prefs.js:110
+msgid "translator-credits"
+msgstr "Christoph Langner"
+
+#: extension/prefs.js:117
 msgid "Default on AC power"
 msgstr "Standard im Netzbetrieb"
 
-#: extension/prefs.js:93
+#: extension/prefs.js:119
 msgid "Default on battery"
 msgstr "Standard im Akkubetrieb"
 
-#: extension/prefs.js:108
+#: extension/prefs.js:134
 msgid "Show in Menu"
 msgstr "Im Menü anzeigen"
 
-#: extension/prefs.js:109
+#: extension/prefs.js:135
 msgid "Default profiles are always shown"
 msgstr "Standardprofile werden immer angezeigt"
 
-#: extension/prefs.js:135
+#: extension/prefs.js:161
 msgid "Icon"
 msgstr "Symbol"
 
-#: extension/prefs.js:137
+#: extension/prefs.js:163
 #, javascript-format
 msgid "Automatic (%s)"
 msgstr "Automatisch (%s)"
