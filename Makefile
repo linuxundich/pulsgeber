@@ -21,7 +21,7 @@ uninstall:
 
 pot:
 	xgettext --from-code=UTF-8 --language=JavaScript -k_ -kN_ \
-		--package-name=$(UUID) -o po/$(DOMAIN).pot extension/*.js
+		--package-name=$(UUID) --package-version=$(shell python3 -c "import json;print(json.load(open('extension/metadata.json'))['version-name'])") -o po/$(DOMAIN).pot extension/*.js
 	for po in po/*.po; do msgmerge --update --backup=none $$po po/$(DOMAIN).pot; done
 
 # Test in a nested GNOME Shell window (GNOME 49+: --devkit).

@@ -56,6 +56,10 @@ gnome-extensions enable pulsgeber@linuxundich.de
 
 Weitere Ziele: `make zip` (Paket für extensions.gnome.org), `make pot` (Übersetzungsvorlage aktualisieren), `make nested` (Test in einer verschachtelten Shell).
 
+## Versionen
+
+Die Versionsnummer steht als `version-name` in `extension/metadata.json`, jede Version ist in Git als `vX.Y.Z` getaggt. Änderungen stehen im [CHANGELOG](CHANGELOG.md).
+
 ## Lizenz
 
 GPL-3.0-or-later
