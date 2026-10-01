@@ -9,6 +9,7 @@ import Gtk from 'gi://Gtk';
 
 import {ExtensionPreferences, gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
+import * as Ppd from './ppd.js';
 import * as Tccd from './tccd.js';
 
 const TCC_DESKTOP_FILE = 'tuxedo-control-center.desktop';
@@ -46,12 +47,6 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
         settings.bind('show-indicator', indicatorRow, 'active', Gio.SettingsBindFlags.DEFAULT);
         general.add(indicatorRow);
 
-        const powerModeRow = new Adw.SwitchRow({
-            title: _('Hide GNOME Power Mode'),
-            subtitle: _('The TUXEDO Control Center overrides the power mode within seconds, so its toggle would show a mode that no longer applies'),
-        });
-        settings.bind('hide-power-mode', powerModeRow, 'active', Gio.SettingsBindFlags.DEFAULT);
-        general.add(powerModeRow);
 
         const pollRow = new Adw.SpinRow({
             title: _('Check Interval'),
@@ -60,6 +55,20 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
         });
         settings.bind('poll-interval', pollRow, 'value', Gio.SettingsBindFlags.DEFAULT);
         general.add(pollRow);
+
+        const powerGroup = new Adw.PreferencesGroup({
+            title: _('GNOME Power Mode'),
+            description: _('GNOME\'s power mode (power-profiles-daemon) and the TUXEDO Control Center change the same CPU settings. The TUXEDO Control Center wins within seconds.'),
+        });
+        page.add(powerGroup);
+
+        const powerModeRow = new Adw.SwitchRow({
+            title: _('Hide Power Mode Toggle'),
+            subtitle: _('Hide it from the Quick Settings while the TUXEDO Control Center is running, as it would show a mode that no longer applies'),
+        });
+        settings.bind('hide-power-mode', powerModeRow, 'active', Gio.SettingsBindFlags.DEFAULT);
+        powerGroup.add(powerModeRow);
+        this._addPpdRow(window, powerGroup, powerModeRow);
 
         const profilesGroup = new Adw.PreferencesGroup({
             title: _('Profiles'),
@@ -98,6 +107,61 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
         const stateMap = tccSettings.stateMap ?? {};
         for (const profile of profiles)
             profilesGroup.add(this._profileRow(settings, profile, profiles, stateMap));
+    }
+
+    async _addPpdRow(window, group, powerModeRow) {
+        let state;
+        try {
+            state = await Ppd.getState();
+        } catch (e) {
+            logError(e, 'power-profiles-daemon');
+            return;
+        }
+        if (state === null)
+            return;
+
+        const row = new Adw.SwitchRow({
+            title: _('Turn Off power-profiles-daemon'),
+            subtitle: _('Masks the service so that it no longer interferes with the TUXEDO Control Center. Requires administrator rights.'),
+        });
+        group.add(row);
+
+        // Set while the row shows a state that was read, not chosen.
+        let syncing = false;
+        const show = masked => {
+            syncing = true;
+            row.active = masked;
+            syncing = false;
+            // Without the daemon GNOME hides its power mode toggle by itself.
+            powerModeRow.sensitive = !masked;
+        };
+        show(state === 'masked');
+
+        row.connect('notify::active', async () => {
+            if (syncing)
+                return;
+            const mask = row.active;
+            row.sensitive = false;
+            try {
+                await (mask ? Ppd.disable() : Ppd.enable());
+            } catch (e) {
+                const denied = [
+                    'org.freedesktop.DBus.Error.AccessDenied',
+                    'org.freedesktop.DBus.Error.InteractiveAuthorizationRequired',
+                ].includes(Gio.DBusError.get_remote_error(e));
+                if (!denied)
+                    logError(e, 'power-profiles-daemon');
+                window.add_toast(new Adw.Toast({
+                    title: denied ? _('Not authorized') : _('Could not change power-profiles-daemon'),
+                }));
+            }
+            try {
+                show(await Ppd.getState() === 'masked');
+            } catch (e) {
+                logError(e, 'power-profiles-daemon');
+            }
+            row.sensitive = true;
+        });
     }
 
     _aboutDialog() {

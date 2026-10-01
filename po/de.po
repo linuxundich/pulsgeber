@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pulsgeber\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 21:59+0200\n"
+"POT-Creation-Date: 2026-10-01 22:06+0200\n"
 "PO-Revision-Date: 2026-10-01 21:27+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -44,112 +44,123 @@ msgstr "Netzbetrieb, Standard: %s"
 msgid "Could not switch TCC profile"
 msgstr "TCC-Profil konnte nicht gewechselt werden"
 
-#: extension/prefs.js:20
+#: extension/prefs.js:21
 msgid "Performance"
 msgstr "Leistung"
 
-#: extension/prefs.js:21
+#: extension/prefs.js:22
 msgid "Balanced"
 msgstr "Ausgeglichen"
 
-#: extension/prefs.js:22
+#: extension/prefs.js:23
 msgid "Power Saver"
 msgstr "Energiesparmodus"
 
-#: extension/prefs.js:34
+#: extension/prefs.js:35
 msgid "General"
 msgstr "Allgemein"
 
-#: extension/prefs.js:39
+#: extension/prefs.js:40
 msgid "Quick Settings"
 msgstr "Schnelleinstellungen"
 
-#: extension/prefs.js:43
+#: extension/prefs.js:44
 msgid "Top Bar Icon"
 msgstr "Symbol in der oberen Leiste"
 
-#: extension/prefs.js:44
+#: extension/prefs.js:45
 msgid "Show the profile icon while a profile other than the default is active"
-msgstr ""
-"Das Profilsymbol anzeigen, solange ein anderes als das Standardprofil aktiv "
-"ist"
+msgstr "Das Profilsymbol anzeigen, solange ein anderes als das Standardprofil aktiv ist"
 
-#: extension/prefs.js:50
-msgid "Hide GNOME Power Mode"
-msgstr "GNOME-Energiemodus ausblenden"
-
-#: extension/prefs.js:51
-msgid ""
-"The TUXEDO Control Center overrides the power mode within seconds, so its "
-"toggle would show a mode that no longer applies"
-msgstr ""
-"Das TUXEDO Control Center überschreibt den Energiemodus nach wenigen "
-"Sekunden, der Schalter würde einen Modus zeigen, der nicht mehr gilt"
-
-#: extension/prefs.js:57
+#: extension/prefs.js:52
 msgid "Check Interval"
 msgstr "Prüfintervall"
 
-#: extension/prefs.js:58
+#: extension/prefs.js:53
 msgid "Seconds between checks for changes made in the TUXEDO Control Center"
-msgstr ""
-"Sekunden zwischen zwei Prüfungen auf Änderungen im TUXEDO Control Center"
+msgstr "Sekunden zwischen zwei Prüfungen auf Änderungen im TUXEDO Control Center"
 
-#: extension/prefs.js:65
+#: extension/prefs.js:60
+msgid "GNOME Power Mode"
+msgstr "Energiemodus von GNOME"
+
+#: extension/prefs.js:61
+msgid "GNOME's power mode (power-profiles-daemon) and the TUXEDO Control Center change the same CPU settings. The TUXEDO Control Center wins within seconds."
+msgstr "Der Energiemodus von GNOME (power-profiles-daemon) und das TUXEDO Control Center ändern dieselben CPU-Einstellungen. Das TUXEDO Control Center setzt sich nach wenigen Sekunden durch."
+
+#: extension/prefs.js:66
+msgid "Hide Power Mode Toggle"
+msgstr "Energiemodus-Schalter ausblenden"
+
+#: extension/prefs.js:67
+msgid "Hide it from the Quick Settings while the TUXEDO Control Center is running, as it would show a mode that no longer applies"
+msgstr "In den Schnelleinstellungen ausblenden, solange das TUXEDO Control Center läuft, weil er einen Modus zeigen würde, der nicht mehr gilt"
+
+#: extension/prefs.js:74
 msgid "Profiles"
 msgstr "Profile"
 
-#: extension/prefs.js:66
+#: extension/prefs.js:75
 msgid "Profiles are created and edited in the TUXEDO Control Center."
 msgstr "Profile legen Sie im TUXEDO Control Center an und bearbeiten sie dort."
 
-#: extension/prefs.js:74
+#: extension/prefs.js:83
 msgid "Open TUXEDO Control Center"
 msgstr "TUXEDO Control Center öffnen"
 
-#: extension/prefs.js:80
+#: extension/prefs.js:89
 msgid "About Pulsgeber"
 msgstr "Info zu Pulsgeber"
 
-#: extension/prefs.js:90
+#: extension/prefs.js:99
 msgid "TUXEDO Control Center service not reachable"
 msgstr "Dienst des TUXEDO Control Centers nicht erreichbar"
 
-#: extension/prefs.js:110
-msgid ""
-"Switches the profiles of the TUXEDO Control Center from the Quick Settings. "
-"Unofficial, not affiliated with TUXEDO Computers."
-msgstr ""
-"Das TUXEDO Control Center überschreibt den Energiemodus nach wenigen "
-"Sekunden, der Schalter würde einen Modus zeigen, der nicht mehr gilt"
-"Schaltet die Profile des TUXEDO Control Centers in den Schnelleinstellungen "
-"um. Inoffiziell, keine Verbindung zu TUXEDO Computers."
+#: extension/prefs.js:124
+msgid "Turn Off power-profiles-daemon"
+msgstr "power-profiles-daemon abschalten"
 
-#: extension/prefs.js:117
+#: extension/prefs.js:125
+msgid "Masks the service so that it no longer interferes with the TUXEDO Control Center. Requires administrator rights."
+msgstr "Maskiert den Dienst, damit er dem TUXEDO Control Center nicht mehr dazwischenfunkt. Erfordert Administratorrechte."
+
+#: extension/prefs.js:155
+msgid "Not authorized"
+msgstr "Nicht berechtigt"
+
+#: extension/prefs.js:155
+msgid "Could not change power-profiles-daemon"
+msgstr "power-profiles-daemon konnte nicht geändert werden"
+
+#: extension/prefs.js:174
+msgid "Switches the profiles of the TUXEDO Control Center from the Quick Settings. Unofficial, not affiliated with TUXEDO Computers."
+msgstr "Das TUXEDO Control Center überschreibt den Energiemodus nach wenigen Sekunden, der Schalter würde einen Modus zeigen, der nicht mehr giltSchaltet die Profile des TUXEDO Control Centers in den Schnelleinstellungen um. Inoffiziell, keine Verbindung zu TUXEDO Computers."
+
+#: extension/prefs.js:181
 msgid "translator-credits"
 msgstr "Christoph Langner"
 
-#: extension/prefs.js:124
+#: extension/prefs.js:188
 msgid "Default on AC power"
 msgstr "Standard im Netzbetrieb"
 
-#: extension/prefs.js:126
+#: extension/prefs.js:190
 msgid "Default on battery"
 msgstr "Standard im Akkubetrieb"
 
-#: extension/prefs.js:141
+#: extension/prefs.js:205
 msgid "Show in Menu"
 msgstr "Im Menü anzeigen"
 
-#: extension/prefs.js:142
+#: extension/prefs.js:206
 msgid "Default profiles are always shown"
 msgstr "Standardprofile werden immer angezeigt"
 
-#: extension/prefs.js:168
+#: extension/prefs.js:232
 msgid "Icon"
 msgstr "Symbol"
 
-#: extension/prefs.js:170
+#: extension/prefs.js:234
 #, javascript-format
 msgid "Automatic (%s)"
 msgstr "Automatisch (%s)"

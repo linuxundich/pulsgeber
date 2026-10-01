@@ -24,10 +24,14 @@ Ein laufender `tccd` (Paket `tuxedo-control-center`). Die Erweiterung spricht ih
 
 GNOMEs Schalter „Energiemodus“ gehört zum power-profiles-daemon (ppd). ppd und `tccd` ergänzen sich nicht, sie schreiben dieselben CPU-Einstellungen (Governor und `energy_performance_preference`, auf AMD auch Boost und Mindesttakt). `tccd` prüft diese Werte alle 10 Sekunden und schreibt sein Profil zurück, sobald sie abweichen. Ein Wechsel im GNOME-Schalter wirkt deshalb nur wenige Sekunden, danach zeigt der Schalter einen Modus an, der nicht mehr gilt. Auf einem InfinityBook mit intel_pstate: ppd setzt EPP `power`, nach rund 5 Sekunden steht wieder `balance_performance` aus dem TCC-Profil.
 
-TUXEDO OS liefert ppd gar nicht erst aus, und `tccd` kennt ppd nicht ([Issue #422](https://github.com/tuxedocomputers/tuxedo-control-center/issues/422)). Pulsgeber blendet den GNOME-Schalter deshalb standardmäßig aus, solange `tccd` läuft. Sauberer ist es, ppd ganz abzuschalten:
+TUXEDO OS liefert ppd gar nicht erst aus, und `tccd` kennt ppd nicht ([Issue #422](https://github.com/tuxedocomputers/tuxedo-control-center/issues/422)). Pulsgeber blendet den GNOME-Schalter deshalb standardmäßig aus, solange `tccd` läuft. Sauberer ist es, ppd ganz abzuschalten. Das geht in den Einstellungen unter „Energiemodus von GNOME“ → „power-profiles-daemon abschalten“: Pulsgeber maskiert und stoppt den Dienst dann über die D-Bus-Schnittstelle von systemd, polkit fragt dafür einmal nach dem Administratorpasswort. Zurückschalten demaskiert und startet ihn wieder. Von Hand entspricht das:
 
 ```bash
 sudo systemctl mask --now power-profiles-daemon.service
+```
+
+```bash
+sudo systemctl unmask power-profiles-daemon.service && sudo systemctl start power-profiles-daemon.service
 ```
 
 ## Installation aus dem Quellcode
