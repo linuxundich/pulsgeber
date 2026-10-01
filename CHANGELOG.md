@@ -15,6 +15,11 @@ fixes on top of it. The version lives in `version-name` in
   says what it does: it removes the tray's autostart entry and ends the
   running tray, while tccd keeps controlling profiles, fans and CPU. Hiding
   sounded as if something kept running in the background.
+- The "Details" page of the About dialog and the extension description in
+  `metadata.json` now explain what Pulsgeber does: the toggle, how long a
+  picked profile lasts, that only the tccd service is needed, and the
+  optional switches for GNOME's power mode, power-profiles-daemon and the
+  TCC tray. Before, they still described version 0.1.0.
 
 ### Fixed
 - The preferences showed no icons next to the profiles: the icon theme only
