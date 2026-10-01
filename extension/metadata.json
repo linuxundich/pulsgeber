@@ -1,0 +1,9 @@
+{
+  "uuid": "pulsgeber@linuxundich.de",
+  "name": "Pulsgeber",
+  "description": "Switch the profiles of the TUXEDO Control Center from a Quick Settings toggle. Unofficial, not affiliated with TUXEDO Computers.",
+  "shell-version": ["50", "51"],
+  "settings-schema": "org.gnome.shell.extensions.pulsgeber",
+  "gettext-domain": "pulsgeber",
+  "url": "https://github.com/linuxundich/pulsgeber"
+}

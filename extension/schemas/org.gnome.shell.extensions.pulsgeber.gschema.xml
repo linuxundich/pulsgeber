@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="pulsgeber">
+  <schema id="org.gnome.shell.extensions.pulsgeber"
+          path="/org/gnome/shell/extensions/pulsgeber/">
+    <key name="show-indicator" type="b">
+      <default>true</default>
+      <summary>Show an icon in the top bar while a profile other than the default is active</summary>
+    </key>
+    <key name="hidden-profiles" type="as">
+      <default>[]</default>
+      <summary>Ids of profiles not listed in the menu</summary>
+    </key>
+    <key name="profile-categories" type="a{ss}">
+      <default>{}</default>
+      <summary>Icon per profile id: performance, balanced or power-saver; missing ids are guessed</summary>
+    </key>
+    <key name="poll-interval" type="u">
+      <range min="1" max="60"/>
+      <default>5</default>
+      <summary>Seconds between checks for profile changes made outside the extension</summary>
+    </key>
+    <key name="last-profile" type="s">
+      <default>''</default>
+      <summary>Profile the toggle switches to when turned on</summary>
+    </key>
+  </schema>
+</schemalist>

@@ -1,0 +1,122 @@
+# German translations for pulsgeber package
+# German translation for pulsgeber.
+# Copyright (C) 2026 THE pulsgeber'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the pulsgeber package.
+# Automatically generated, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: pulsgeber\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-01 21:27+0200\n"
+"PO-Revision-Date: 2026-10-01 21:27+0200\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: extension/extension.js:24 extension/extension.js:186
+msgid "TCC Profile"
+msgstr "TCC-Profil"
+
+#: extension/extension.js:26
+msgid "Open TCC profile menu"
+msgstr "Menü der TCC-Profile öffnen"
+
+#: extension/extension.js:41
+msgid "TUXEDO Control Center"
+msgstr "TUXEDO Control Center"
+
+#: extension/extension.js:189
+#, javascript-format
+msgid "On battery, default: %s"
+msgstr "Akkubetrieb, Standard: %s"
+
+#: extension/extension.js:189
+#, javascript-format
+msgid "On AC power, default: %s"
+msgstr "Netzbetrieb, Standard: %s"
+
+#: extension/extension.js:225
+msgid "Could not switch TCC profile"
+msgstr "TCC-Profil konnte nicht gewechselt werden"
+
+#: extension/prefs.js:17
+msgid "Performance"
+msgstr "Leistung"
+
+#: extension/prefs.js:18
+msgid "Balanced"
+msgstr "Ausgeglichen"
+
+#: extension/prefs.js:19
+msgid "Power Saver"
+msgstr "Energiesparmodus"
+
+#: extension/prefs.js:29
+msgid "General"
+msgstr "Allgemein"
+
+#: extension/prefs.js:34
+msgid "Quick Settings"
+msgstr "Schnelleinstellungen"
+
+#: extension/prefs.js:38
+msgid "Top Bar Icon"
+msgstr "Symbol in der oberen Leiste"
+
+#: extension/prefs.js:39
+msgid "Show the profile icon while a profile other than the default is active"
+msgstr "Das Profilsymbol anzeigen, solange ein anderes als das Standardprofil aktiv ist"
+
+#: extension/prefs.js:45
+msgid "Check Interval"
+msgstr "Prüfintervall"
+
+#: extension/prefs.js:46
+msgid "Seconds between checks for changes made in the TUXEDO Control Center"
+msgstr "Sekunden zwischen zwei Prüfungen auf Änderungen im TUXEDO Control Center"
+
+#: extension/prefs.js:53
+msgid "Profiles"
+msgstr "Profile"
+
+#: extension/prefs.js:54
+msgid "Profiles are created and edited in the TUXEDO Control Center."
+msgstr "Profile legen Sie im TUXEDO Control Center an und bearbeiten sie dort."
+
+#: extension/prefs.js:61
+msgid "Open TUXEDO Control Center"
+msgstr "TUXEDO Control Center öffnen"
+
+#: extension/prefs.js:75
+msgid "TUXEDO Control Center service not reachable"
+msgstr "Dienst des TUXEDO Control Centers nicht erreichbar"
+
+#: extension/prefs.js:91
+msgid "Default on AC power"
+msgstr "Standard im Netzbetrieb"
+
+#: extension/prefs.js:93
+msgid "Default on battery"
+msgstr "Standard im Akkubetrieb"
+
+#: extension/prefs.js:108
+msgid "Show in Menu"
+msgstr "Im Menü anzeigen"
+
+#: extension/prefs.js:109
+msgid "Default profiles are always shown"
+msgstr "Standardprofile werden immer angezeigt"
+
+#: extension/prefs.js:135
+msgid "Icon"
+msgstr "Symbol"
+
+#: extension/prefs.js:137
+#, javascript-format
+msgid "Automatic (%s)"
+msgstr "Automatisch (%s)"
