@@ -6,7 +6,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: pulsgeber@linuxundich.de 0.3.0\n"
+"Project-Id-Version: pulsgeber@linuxundich.de 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-10-02 01:54+0200\n"
 "PO-Revision-Date: 2026-10-01 21:27+0200\n"

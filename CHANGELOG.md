@@ -10,6 +10,8 @@ fixes on top of it. The version lives in `version-name` in
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-02
+
 ### Added
 - A fourth profile icon for profiles created in the TCC: a pulse above a
   slider, i.e. set up by hand (draft B in `docs/icon-drafts/custom/`). Such

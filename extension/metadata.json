@@ -2,7 +2,7 @@
   "uuid": "pulsgeber@linuxundich.de",
   "name": "Pulsgeber",
   "description": "Switch the profiles of the TUXEDO Control Center from a Quick Settings toggle. A picked profile applies until the power source changes; a click on the toggle goes back to the profile assigned to AC power or battery. Talks directly to the TUXEDO Control Center service (tccd), the TCC app and its tray are not needed for switching. Optionally hides GNOME's power mode toggle, which conflicts with tccd, turns off power-profiles-daemon and keeps the TCC tray from starting.\n\nUnofficial, not affiliated with TUXEDO Computers.",
-  "version-name": "0.3.0",
+  "version-name": "0.4.0",
   "shell-version": [
     "50",
     "51"
