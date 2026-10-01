@@ -16,6 +16,15 @@ fixes on top of it. The version lives in `version-name` in
   running tray, while tccd keeps controlling profiles, fans and CPU. Hiding
   sounded as if something kept running in the background.
 
+### Fixed
+- The preferences showed no icons next to the profiles: the icon theme only
+  searches the directories hicolor lists, and `symbolic/status` is not one of
+  them. The pulse icons are now loaded as files there too, as in the Shell.
+- Settings of profiles deleted in the TCC (hidden in the menu, pinned icon,
+  last picked profile) are now dropped when the preferences open, instead of
+  piling up. Profiles created in the TCC show up in the menu the next time it
+  opens, with an icon guessed from their CPU and fan settings.
+
 ## [0.2.0] - 2026-10-01
 
 ### Added

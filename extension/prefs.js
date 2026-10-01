@@ -108,9 +108,27 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
             return;
         }
 
+        this._forgetDeletedProfiles(settings, profiles);
         const stateMap = tccSettings.stateMap ?? {};
         for (const profile of profiles)
             profilesGroup.add(this._profileRow(settings, profile, profiles, stateMap));
+    }
+
+    // Profiles can be created and deleted in the TCC at any time; drop the
+    // settings of profiles that no longer exist.
+    _forgetDeletedProfiles(settings, profiles) {
+        const ids = new Set(profiles.map(p => p.id));
+        const hidden = settings.get_strv('hidden-profiles');
+        if (hidden.some(id => !ids.has(id)))
+            settings.set_strv('hidden-profiles', hidden.filter(id => ids.has(id)));
+        const pinned = settings.get_value('profile-categories').deepUnpack();
+        if (Object.keys(pinned).some(id => !ids.has(id))) {
+            settings.set_value('profile-categories', new GLib.Variant('a{ss}',
+                Object.fromEntries(Object.entries(pinned).filter(([id]) => ids.has(id)))));
+        }
+        const last = settings.get_string('last-profile');
+        if (last && !ids.has(last))
+            settings.reset('last-profile');
     }
 
     _trayRow(window) {
@@ -270,7 +288,10 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
             syncing = true;
             iconRow.selected = Math.max(0, choices.indexOf(category ?? AUTOMATIC));
             syncing = false;
-            icon.iconName = Tccd.iconForCategory(
+            // Loaded as a file like in the Shell: the icon theme search path
+            // only covers the directories hicolor lists, and symbolic/status
+            // is not among them.
+            icon.gicon = Tccd.giconForCategory(this.path,
                 Tccd.CATEGORIES.includes(category) ? category : guessed);
         };
         syncIcon();
