@@ -10,7 +10,7 @@ all: zip
 zip: $(ZIP)
 
 $(ZIP): $(shell find extension -type f) po/*.po
-	gnome-extensions pack --force --podir=../po --extra-source=tccd.js --extra-source=ppd.js --extra-source=icons \
+	gnome-extensions pack --force --podir=../po --extra-source=tccd.js --extra-source=ppd.js --extra-source=tray.js --extra-source=icons \
 		--gettext-domain=$(DOMAIN) extension
 
 install: zip

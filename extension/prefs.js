@@ -11,6 +11,7 @@ import {ExtensionPreferences, gettext as _} from 'resource:///org/gnome/Shell/Ex
 
 import * as Ppd from './ppd.js';
 import * as Tccd from './tccd.js';
+import * as Tray from './tray.js';
 
 const TCC_DESKTOP_FILE = 'tuxedo-control-center.desktop';
 const AUTOMATIC = 'auto';
@@ -47,6 +48,9 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
         settings.bind('show-indicator', indicatorRow, 'active', Gio.SettingsBindFlags.DEFAULT);
         general.add(indicatorRow);
 
+
+        if (Tray.isAvailable())
+            general.add(this._trayRow(window));
 
         const pollRow = new Adw.SpinRow({
             title: _('Check Interval'),
@@ -107,6 +111,31 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
         const stateMap = tccSettings.stateMap ?? {};
         for (const profile of profiles)
             profilesGroup.add(this._profileRow(settings, profile, profiles, stateMap));
+    }
+
+    _trayRow(window) {
+        const row = new Adw.SwitchRow({
+            title: _('Hide TCC Tray Icon'),
+            subtitle: _('Pulsgeber takes over switching profiles. Works like “Tray autostart” in the menu of the TCC icon; an open TCC window closes as well.'),
+            active: !Tray.isEnabled(),
+        });
+        row.connect('notify::active', () => {
+            // TCC's own "Tray autostart" item changes the same file, so
+            // compare against the file rather than the switch.
+            if (row.active === !Tray.isEnabled())
+                return;
+            try {
+                if (row.active)
+                    Tray.hide();
+                else
+                    Tray.show();
+            } catch (e) {
+                logError(e, 'TCC tray');
+                window.add_toast(new Adw.Toast({title: _('Could not change the TCC tray icon')}));
+                row.active = !Tray.isEnabled();
+            }
+        });
+        return row;
     }
 
     async _addPpdRow(window, group, powerModeRow) {

@@ -120,6 +120,8 @@ class ProfileToggle extends QuickMenuToggle {
 
             const stateMap = settings.stateMap ?? {};
             this._defaultId = this._onBattery ? stateMap.power_bat : stateMap.power_ac;
+            // tccd applies this one when the power source changes next.
+            this._nextId = this._onBattery ? stateMap.power_ac : stateMap.power_bat;
             this._activeId = active.id;
             this._activeName = active.name;
 
@@ -176,7 +178,6 @@ class ProfileToggle extends QuickMenuToggle {
 
         const active = this._profiles.find(p => p.id === this._activeId);
         const category = active ? this._categoryOf(active) : 'balanced';
-        const defaultName = this._profileName(this._defaultId);
         this.set({
             subtitle: this._activeName ?? null,
             gicon: this._icon(category),
@@ -185,15 +186,28 @@ class ProfileToggle extends QuickMenuToggle {
             // toggle, which is on whenever it is not "Balanced".
             checked: this._activeId !== this._defaultId,
         });
-        this.menu.setHeader(this._icon(category), _('TCC Profile'),
-            defaultName
-                ? (this._onBattery
-                    ? _('On battery, default: %s') : _('On AC power, default: %s'))
-                    .format(defaultName)
-                : null);
+        this.menu.setHeader(this._icon(category), _('TCC Profile'), this._headerSubtitle());
 
         if (this.checked)
             this._settings.set_string('last-profile', this._activeId);
+    }
+
+    _headerSubtitle() {
+        // The pill's own subtitle is too narrow for more than the profile
+        // name, so the header says whether the choice is only temporary.
+        if (this.checked) {
+            const next = this._profileName(this._nextId);
+            if (!next)
+                return _('Until the power source changes');
+            return (this._onBattery
+                ? _('Until on AC power, then %s')
+                : _('Until on battery, then %s')).format(next);
+        }
+        const defaultName = this._profileName(this._defaultId);
+        if (!defaultName)
+            return null;
+        return (this._onBattery
+            ? _('On battery, default: %s') : _('On AC power, default: %s')).format(defaultName);
     }
 
     _profileName(id) {
