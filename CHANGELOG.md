@@ -10,6 +10,12 @@ fixes on top of it. The version lives in `version-name` in
 
 ## [Unreleased]
 
+### Changed
+- The option "Hide TCC Tray Icon" is now called "Don’t Start TCC Tray" and
+  says what it does: it removes the tray's autostart entry and ends the
+  running tray, while tccd keeps controlling profiles, fans and CPU. Hiding
+  sounded as if something kept running in the background.
+
 ## [0.2.0] - 2026-10-01
 
 ### Added

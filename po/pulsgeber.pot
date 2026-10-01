@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pulsgeber@linuxundich.de 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 22:19+0200\n"
+"POT-Creation-Date: 2026-10-01 22:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -134,13 +134,14 @@ msgid "TUXEDO Control Center service not reachable"
 msgstr ""
 
 #: extension/prefs.js:118
-msgid "Hide TCC Tray Icon"
+msgid "Don’t Start TCC Tray"
 msgstr ""
 
 #: extension/prefs.js:119
 msgid ""
-"Pulsgeber takes over switching profiles. Works like “Tray autostart” in the "
-"menu of the TCC icon; an open TCC window closes as well."
+"Removes the autostart entry and ends the running tray icon; an open TCC "
+"window closes as well. Profiles, fans and CPU stay under control of the tccd "
+"service."
 msgstr ""
 
 #: extension/prefs.js:134

@@ -115,8 +115,8 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
 
     _trayRow(window) {
         const row = new Adw.SwitchRow({
-            title: _('Hide TCC Tray Icon'),
-            subtitle: _('Pulsgeber takes over switching profiles. Works like “Tray autostart” in the menu of the TCC icon; an open TCC window closes as well.'),
+            title: _('Don’t Start TCC Tray'),
+            subtitle: _('Removes the autostart entry and ends the running tray icon; an open TCC window closes as well. Profiles, fans and CPU stay under control of the tccd service.'),
             active: !Tray.isEnabled(),
         });
         row.connect('notify::active', () => {

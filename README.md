@@ -15,7 +15,7 @@ Inoffiziell, keine Verbindung zu TUXEDO Computers.
 - Eigene Puls-Symbole je Profil: ein flacher Puls für Energiesparen, zwei für Ausgeglichen, drei dichte für Leistung.
 - Blendet GNOMEs eigenen Schalter „Energiemodus“ aus, solange `tccd` läuft (abschaltbar, siehe unten).
 - Solange ein Profil von Hand gewählt ist, nennt die Kopfzeile des Menüs, wann es endet und was danach kommt, etwa „Bis Akkubetrieb, dann Cool and breezy“.
-- Blendet auf Wunsch das Tray-Symbol des TCC aus (siehe unten).
+- Startet auf Wunsch das Tray des TCC nicht mehr (siehe unten).
 - Einstellungen: Profile im Menü ausblenden, Symbol je Profil (Leistung, Ausgeglichen, Energiesparmodus oder automatisch geraten), Prüfintervall.
 
 ## Voraussetzungen
@@ -26,7 +26,7 @@ Ein laufender `tccd` (Paket `tuxedo-control-center`). Die Erweiterung spricht ih
 
 Nein. Profile schaltet und überwacht der Systemdienst `tccd`, den das Paket als `tccd.service` beim Booten startet; mit ihm spricht Pulsgeber. Das Programm „TUXEDO Control Center“ und sein Tray-Symbol (`tuxedo-control-center --tray`) sind nur Oberflächen für denselben Dienst. Gebraucht wird das Programm nur, um Profile anzulegen und zu bearbeiten (`/etc/tcc/profiles`) und sie Netz- und Akkubetrieb zuzuordnen.
 
-Die Option „Tray-Symbol des TCC ausblenden“ macht dasselbe wie „Tray autostart“ im Menü des TCC-Symbols: Sie löscht `~/.config/autostart/tuxedo-control-center-tray.desktop` bzw. kopiert die Datei aus der TCC-Installation zurück. Zusätzlich beendet sie das laufende Tray-Symbol bzw. startet es, damit die Änderung sofort gilt. Ein offenes TCC-Fenster gehört zum selben Prozess und schließt sich dabei mit.
+Die Option „Tray des TCC nicht starten“ macht dasselbe wie „Tray autostart“ im Menü des TCC-Symbols: Sie löscht `~/.config/autostart/tuxedo-control-center-tray.desktop` bzw. kopiert die Datei aus der TCC-Installation zurück. Zusätzlich beendet sie das laufende Tray-Symbol bzw. startet es, damit die Änderung sofort gilt. Ein offenes TCC-Fenster gehört zum selben Prozess und schließt sich dabei mit.
 
 ## TCC und power-profiles-daemon
 
