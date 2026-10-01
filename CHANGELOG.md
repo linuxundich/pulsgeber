@@ -20,6 +20,9 @@ fixes on top of it. The version lives in `version-name` in
   picked profile lasts, that only the tccd service is needed, and the
   optional switches for GNOME's power mode, power-profiles-daemon and the
   TCC tray. Before, they still described version 0.1.0.
+- README brought up to date: all settings, how new and deleted TCC profiles
+  are handled, install from GitHub, what it was tested with, and an overview
+  of the source files.
 
 ### Fixed
 - The preferences showed no icons next to the profiles: the icon theme only
