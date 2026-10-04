@@ -158,11 +158,10 @@ a TUXEDO InfinityBook S 17 Gen6. GNOME 51 is declared but not tested yet.
 
 ## Use of AI
 
-Pulsgeber was developed with the help of AI. Most of the code, the icons, the
-translations and the documentation were written by Claude (Anthropic) in
-Claude Code, directed by me: I set the requirements, made the design
-decisions (name, icon, behaviour), reviewed the results and tested the
-extension on my own TUXEDO notebook. The research on how `tccd`,
+Pulsgeber is AI-assisted. Most of the code, the icons, the translations and
+the documentation were written with AI assistance, directed by me: I set the
+requirements, made the design decisions (name, icon, behaviour), reviewed the
+results and tested the extension on my own TUXEDO notebook. The research on how `tccd`,
 power-profiles-daemon and the TCC tray interact was also done with AI
 assistance and checked against the running system. Commits written with AI
 assistance carry a `Co-Authored-By` line.
