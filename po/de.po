@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pulsgeber@linuxundich.de 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-02 01:54+0200\n"
+"POT-Creation-Date: 2026-10-05 23:00+0200\n"
 "PO-Revision-Date: 2026-10-01 21:27+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -88,7 +88,9 @@ msgstr "Symbol in der oberen Leiste"
 
 #: extension/prefs.js:47
 msgid "Show the profile icon while a profile other than the default is active"
-msgstr "Das Profilsymbol anzeigen, solange ein anderes als das Standardprofil aktiv ist"
+msgstr ""
+"Das Profilsymbol anzeigen, solange ein anderes als das Standardprofil aktiv "
+"ist"
 
 #: extension/prefs.js:57
 msgid "Check Interval"
@@ -96,23 +98,33 @@ msgstr "Prüfintervall"
 
 #: extension/prefs.js:58
 msgid "Seconds between checks for changes made in the TUXEDO Control Center"
-msgstr "Sekunden zwischen zwei Prüfungen auf Änderungen im TUXEDO Control Center"
+msgstr ""
+"Sekunden zwischen zwei Prüfungen auf Änderungen im TUXEDO Control Center"
 
 #: extension/prefs.js:65
 msgid "GNOME Power Mode"
 msgstr "Energiemodus von GNOME"
 
 #: extension/prefs.js:66
-msgid "GNOME's power mode (power-profiles-daemon) and the TUXEDO Control Center change the same CPU settings. The TUXEDO Control Center wins within seconds."
-msgstr "Der Energiemodus von GNOME (power-profiles-daemon) und das TUXEDO Control Center ändern dieselben CPU-Einstellungen. Das TUXEDO Control Center setzt sich nach wenigen Sekunden durch."
+msgid ""
+"GNOME's power mode (power-profiles-daemon) and the TUXEDO Control Center "
+"change the same CPU settings. The TUXEDO Control Center wins within seconds."
+msgstr ""
+"Der Energiemodus von GNOME (power-profiles-daemon) und das TUXEDO Control "
+"Center ändern dieselben CPU-Einstellungen. Das TUXEDO Control Center setzt "
+"sich nach wenigen Sekunden durch."
 
 #: extension/prefs.js:71
 msgid "Hide Power Mode Toggle"
 msgstr "Energiemodus-Schalter ausblenden"
 
 #: extension/prefs.js:72
-msgid "Hide it from the Quick Settings while the TUXEDO Control Center is running, as it would show a mode that no longer applies"
-msgstr "In den Schnelleinstellungen ausblenden, solange das TUXEDO Control Center läuft, weil er einen Modus zeigen würde, der nicht mehr gilt"
+msgid ""
+"Hide it from the Quick Settings while the TUXEDO Control Center is running, "
+"as it would show a mode that no longer applies"
+msgstr ""
+"In den Schnelleinstellungen ausblenden, solange das TUXEDO Control Center "
+"läuft, weil er einen Modus zeigen würde, der nicht mehr gilt"
 
 #: extension/prefs.js:79
 msgid "Profiles"
@@ -139,8 +151,14 @@ msgid "Don’t Start TCC Tray"
 msgstr "Tray des TCC nicht starten"
 
 #: extension/prefs.js:138
-msgid "Removes the autostart entry and ends the running tray icon; an open TCC window closes as well. Profiles, fans and CPU stay under control of the tccd service."
-msgstr "Löscht den Autostart-Eintrag und beendet das laufende Tray-Symbol, ein offenes TCC-Fenster schließt sich mit. Profile, Lüfter und CPU steuert weiterhin der Dienst tccd."
+msgid ""
+"Removes the autostart entry and ends the running tray icon; an open TCC "
+"window closes as well. Profiles, fans and CPU stay under control of the tccd "
+"service."
+msgstr ""
+"Löscht den Autostart-Eintrag und beendet das laufende Tray-Symbol, ein "
+"offenes TCC-Fenster schließt sich mit. Profile, Lüfter und CPU steuert "
+"weiterhin der Dienst tccd."
 
 #: extension/prefs.js:153
 msgid "Could not change the TCC tray icon"
@@ -151,8 +169,12 @@ msgid "Turn Off power-profiles-daemon"
 msgstr "power-profiles-daemon abschalten"
 
 #: extension/prefs.js:173
-msgid "Masks the service so that it no longer interferes with the TUXEDO Control Center. Requires administrator rights."
-msgstr "Maskiert den Dienst, damit er dem TUXEDO Control Center nicht mehr dazwischenfunkt. Erfordert Administratorrechte."
+msgid ""
+"Masks the service so that it no longer interferes with the TUXEDO Control "
+"Center. Requires administrator rights."
+msgstr ""
+"Maskiert den Dienst, damit er dem TUXEDO Control Center nicht mehr "
+"dazwischenfunkt. Erfordert Administratorrechte."
 
 #: extension/prefs.js:203
 msgid "Not authorized"
@@ -163,20 +185,44 @@ msgid "Could not change power-profiles-daemon"
 msgstr "power-profiles-daemon konnte nicht geändert werden"
 
 #: extension/prefs.js:223
-msgid "Pulsgeber adds a “TCC Profile” toggle to the Quick Settings and switches the profiles of the TUXEDO Control Center from there."
-msgstr "Pulsgeber fügt den Schnelleinstellungen den Schalter „TCC-Profil“ hinzu und schaltet von dort die Profile des TUXEDO Control Centers um."
+msgid ""
+"Pulsgeber adds a “TCC Profile” toggle to the Quick Settings and switches the "
+"profiles of the TUXEDO Control Center from there."
+msgstr ""
+"Pulsgeber fügt den Schnelleinstellungen den Schalter „TCC-Profil“ hinzu und "
+"schaltet von dort die Profile des TUXEDO Control Centers um."
 
 #: extension/prefs.js:224
-msgid "A profile picked there applies until the power source changes; then the TUXEDO Control Center applies the profile assigned to AC power or battery again. A click on the toggle goes back to that profile right away."
-msgstr "Ein dort gewähltes Profil gilt bis zum nächsten Wechsel der Stromquelle, danach setzt das TUXEDO Control Center wieder das Profil, das dem Netz- oder Akkubetrieb zugeordnet ist. Ein Klick auf den Schalter kehrt sofort zu diesem Profil zurück."
+msgid ""
+"A profile picked there applies until the power source changes; then the "
+"TUXEDO Control Center applies the profile assigned to AC power or battery "
+"again. A click on the toggle goes back to that profile right away."
+msgstr ""
+"Ein dort gewähltes Profil gilt bis zum nächsten Wechsel der Stromquelle, "
+"danach setzt das TUXEDO Control Center wieder das Profil, das dem Netz- oder "
+"Akkubetrieb zugeordnet ist. Ein Klick auf den Schalter kehrt sofort zu "
+"diesem Profil zurück."
 
 #: extension/prefs.js:225
-msgid "Pulsgeber talks directly to the TUXEDO Control Center service (tccd), which runs in the background anyway. The TUXEDO Control Center app and its tray icon are only needed to create and edit profiles."
-msgstr "Pulsgeber spricht direkt mit dem Dienst des TUXEDO Control Centers (tccd), der ohnehin im Hintergrund läuft. Das Programm TUXEDO Control Center und sein Tray-Symbol braucht man nur, um Profile anzulegen und zu bearbeiten."
+msgid ""
+"Pulsgeber talks directly to the TUXEDO Control Center service (tccd), which "
+"runs in the background anyway. The TUXEDO Control Center app and its tray "
+"icon are only needed to create and edit profiles."
+msgstr ""
+"Pulsgeber spricht direkt mit dem Dienst des TUXEDO Control Centers (tccd), "
+"der ohnehin im Hintergrund läuft. Das Programm TUXEDO Control Center und "
+"sein Tray-Symbol braucht man nur, um Profile anzulegen und zu bearbeiten."
 
 #: extension/prefs.js:226
-msgid "Optionally, Pulsgeber hides GNOME’s power mode toggle, whose settings the TUXEDO Control Center overrides within seconds, turns off power-profiles-daemon and keeps the tray of the TUXEDO Control Center from starting."
-msgstr "Auf Wunsch blendet Pulsgeber den Energiemodus-Schalter von GNOME aus, dessen Einstellungen das TUXEDO Control Center nach wenigen Sekunden überschreibt, schaltet power-profiles-daemon ab und verhindert, dass das Tray des TUXEDO Control Centers startet."
+msgid ""
+"Optionally, Pulsgeber hides GNOME’s power mode toggle, whose settings the "
+"TUXEDO Control Center overrides within seconds, turns off power-profiles-"
+"daemon and keeps the tray of the TUXEDO Control Center from starting."
+msgstr ""
+"Auf Wunsch blendet Pulsgeber den Energiemodus-Schalter von GNOME aus, dessen "
+"Einstellungen das TUXEDO Control Center nach wenigen Sekunden überschreibt, "
+"schaltet power-profiles-daemon ab und verhindert, dass das Tray des TUXEDO "
+"Control Centers startet."
 
 #: extension/prefs.js:227
 msgid "Unofficial, not affiliated with TUXEDO Computers."
@@ -210,3 +256,19 @@ msgstr "Symbol"
 #, javascript-format
 msgid "Automatic (%s)"
 msgstr "Automatisch (%s)"
+
+#: extension/tccd.js:38
+msgid "Powersave extreme"
+msgstr "Energie sparen"
+
+#: extension/tccd.js:39
+msgid "Quiet"
+msgstr "Leise"
+
+#: extension/tccd.js:40
+msgid "Office and Multimedia"
+msgstr "Office und Multimedia"
+
+#: extension/tccd.js:41
+msgid "High Performance"
+msgstr "Hohe Leistung"

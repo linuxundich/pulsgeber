@@ -10,6 +10,15 @@ fixes on top of it. The version lives in `version-name` in
 
 ## [Unreleased]
 
+### Fixed
+- On devices that get TCC's newer default profiles (e.g. InfinityBook Pro
+  Gen 8, Polaris, Stellaris), these showed up with their internal ids
+  (`__profile_silent__`, `__office__`, …): tccd stores the id as the name
+  and only the TCC app translates it. Pulsgeber now shows the names the TCC
+  app uses (“Powersave extreme”, “Quiet”, “Office and Multimedia”, “High
+  Performance”; German “Energie sparen”, “Leise”, “Office und Multimedia”,
+  “Hohe Leistung”). Legacy and custom profiles are unchanged.
+
 ## [0.4.0] - 2026-10-02
 
 ### Added

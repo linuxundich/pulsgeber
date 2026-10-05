@@ -112,9 +112,9 @@ class ProfileToggle extends QuickMenuToggle {
     async _refresh(withProfiles) {
         try {
             const [active, settings, profiles] = await Promise.all([
-                Tccd.getActiveProfile(),
+                Tccd.getActiveProfile(_),
                 Tccd.getSettings(),
-                withProfiles || !this._profiles.length ? Tccd.getProfiles() : null,
+                withProfiles || !this._profiles.length ? Tccd.getProfiles(_) : null,
             ]);
             if (this._cancellable.is_cancelled())
                 return;

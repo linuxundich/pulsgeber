@@ -30,11 +30,28 @@ async function callJson(method) {
     return JSON.parse(await call(method));
 }
 
+// Newer TCC versions store the id of their own profiles as the name, too,
+// and translate it only in the TCC app. These are the names the app shows.
+// N_() only marks them for xgettext; callers pass their own gettext.
+const N_ = s => s;
+const DEFAULT_PROFILE_NAMES = {
+    '__profile_max_energy_save__': N_('Powersave extreme'),
+    '__profile_silent__': N_('Quiet'),
+    '__office__': N_('Office and Multimedia'),
+    '__high_performance__': N_('High Performance'),
+};
+
+function withDisplayName(profile, gettext) {
+    const name = profile.name === profile.id ? DEFAULT_PROFILE_NAMES[profile.id] : null;
+    return name ? {...profile, name: gettext(name)} : profile;
+}
+
 /**
+ * @param {(msgid: string) => string} gettext translates TCC's own profile names
  * @returns {Promise<object[]>} default and custom profiles, as tccd lists
  *   them, each with `isCustom` set for profiles the user created
  */
-export async function getProfiles() {
+export async function getProfiles(gettext) {
     // Profiles that do not ship with the TCC were created by the user;
     // tccd marks them only by listing them separately.
     const [profiles, defaults] = await Promise.all([
@@ -42,14 +59,15 @@ export async function getProfiles() {
         callJson('GetDefaultProfilesJSON'),
     ]);
     const defaultIds = new Set(defaults.map(p => p.id));
-    return profiles.map(p => ({...p, isCustom: !defaultIds.has(p.id)}));
+    return profiles.map(p => withDisplayName({...p, isCustom: !defaultIds.has(p.id)}, gettext));
 }
 
 /**
+ * @param {(msgid: string) => string} gettext translates TCC's own profile names
  * @returns {Promise<object>} the profile tccd currently applies
  */
-export function getActiveProfile() {
-    return callJson('GetActiveProfileJSON');
+export async function getActiveProfile(gettext) {
+    return withDisplayName(await callJson('GetActiveProfileJSON'), gettext);
 }
 
 /**

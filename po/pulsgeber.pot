@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pulsgeber@linuxundich.de 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-02 01:56+0200\n"
+"POT-Creation-Date: 2026-10-05 23:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -228,4 +228,20 @@ msgstr ""
 #: extension/prefs.js:287
 #, javascript-format
 msgid "Automatic (%s)"
+msgstr ""
+
+#: extension/tccd.js:38
+msgid "Powersave extreme"
+msgstr ""
+
+#: extension/tccd.js:39
+msgid "Quiet"
+msgstr ""
+
+#: extension/tccd.js:40
+msgid "Office and Multimedia"
+msgstr ""
+
+#: extension/tccd.js:41
+msgid "High Performance"
 msgstr ""

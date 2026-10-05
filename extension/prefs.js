@@ -98,7 +98,7 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
 
         let profiles, tccSettings;
         try {
-            [profiles, tccSettings] = await Promise.all([Tccd.getProfiles(), Tccd.getSettings()]);
+            [profiles, tccSettings] = await Promise.all([Tccd.getProfiles(_), Tccd.getSettings()]);
         } catch (e) {
             const row = new Adw.ActionRow({
                 title: _('TUXEDO Control Center service not reachable'),
