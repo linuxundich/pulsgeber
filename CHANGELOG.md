@@ -10,6 +10,8 @@ fixes on top of it. The version lives in `version-name` in
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-10-05
+
 ### Fixed
 - On devices that get TCC's newer default profiles (e.g. InfinityBook Pro
   Gen 8, Polaris, Stellaris), these showed up with their internal ids
