@@ -14,6 +14,8 @@
 <p align="center">
   <a href="https://github.com/linuxundich/pulsgeber/releases/latest"><strong>Download ZIP</strong></a>
   &nbsp;·&nbsp; GNOME Extensions: planned &nbsp;·&nbsp;
+  <a href="https://linuxundich.de/en/projects/pulsgeber/">Project page</a>
+  &nbsp;·&nbsp;
   <a href="CHANGELOG.md">Changelog</a>
 </p>
 
@@ -115,8 +117,19 @@ No. Without `tccd` there are no profiles to switch.
 **Is Pulsgeber a TUXEDO product?**
 No. It is an unofficial project, not affiliated with TUXEDO Computers.
 
+## On the blog
+
+Pulsgeber has its own page on my blog
+[Linux und Ich](https://linuxundich.de/en/projects/pulsgeber/), with more
+details on the extension and news about upcoming versions. The
+[project overview](https://linuxundich.de/en/projects/) lists everything else
+I build for the Linux desktop. Questions, ideas or feedback that don't fit
+into an issue? [Get in touch](https://linuxundich.de/en/contact/), I read
+every message.
+
 ## More
 
+- [Project page on linuxundich.de](https://linuxundich.de/en/projects/pulsgeber/): details, background and news
 - [Technical notes](docs/TECHNICAL.md): `tccd`, the TCC tray, power-profiles-daemon, building from source
 - [Changelog](CHANGELOG.md)
 - Found a bug or want to translate Pulsgeber? [Open an issue](https://github.com/linuxundich/pulsgeber/issues) or add a po file in [po/](po/)

@@ -10,6 +10,10 @@ fixes on top of it. The version lives in `version-name` in
 
 ## [Unreleased]
 
+### Documentation
+- README links to the project page and the project overview on
+  linuxundich.de and to the contact form.
+
 ## [0.4.1] - 2026-10-05
 
 ### Fixed
