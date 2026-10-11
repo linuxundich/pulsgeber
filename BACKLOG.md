@@ -18,7 +18,8 @@ Open items and undecided ideas. Shipped changes are in
       official support (metadata, About dialog, README).
 - [ ] Read through all of `extension/*.js` once more before submitting:
       reviewers ask about the code and expect the author to answer.
-- [ ] Release 0.5.0, upload the ZIP to extensions.gnome.org.
+- [x] Release 0.5.0.
+- [ ] Upload the ZIP to extensions.gnome.org.
 - [ ] After approval: replace "GNOME Extensions: planned" and the install
       note in the README with the link to the EGO page.
 

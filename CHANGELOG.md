@@ -10,6 +10,8 @@ fixes on top of it. The version lives in `version-name` in
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-11
+
 Preparation for extensions.gnome.org.
 
 ### Changed
