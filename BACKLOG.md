@@ -13,8 +13,9 @@ Open items and undecided ideas. Shipped changes are in
 
 ## extensions.gnome.org
 
-- [ ] Ask TUXEDO for written permission to use the names "TUXEDO" and
-      "TUXEDO Control Center" (EGO rule on trademarks).
+- [x] Names "TUXEDO" and "TUXEDO Control Center": TUXEDO is fine with
+      community projects as long as the disclaimer says there is no
+      official support (metadata, About dialog, README).
 - [ ] Read through all of `extension/*.js` once more before submitting:
       reviewers ask about the code and expect the author to answer.
 - [ ] Release 0.5.0, upload the ZIP to extensions.gnome.org.

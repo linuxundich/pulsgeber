@@ -22,6 +22,8 @@ Preparation for extensions.gnome.org.
 - One settings object and one watch on tccd are shared by the toggle and
   the power mode hiding; D-Bus calls to tccd are cancelled on disable.
 - Errors are logged with `console.error`.
+- The disclaimer in the description, the About dialog and the README now
+  says that Pulsgeber is a community project without support from TUXEDO.
 
 ### Fixed
 - While a profile other than the default was active, Pulsgeber wrote the

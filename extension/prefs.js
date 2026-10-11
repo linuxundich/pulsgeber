@@ -229,7 +229,7 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
                 _('A profile picked there applies until the power source changes; then the TUXEDO Control Center applies the profile assigned to AC power or battery again. A click on the toggle goes back to that profile right away.'),
                 _('Pulsgeber talks directly to the TUXEDO Control Center service (tccd), which runs in the background anyway. The TUXEDO Control Center app and its tray icon are only needed to create and edit profiles.'),
                 _('Optionally, Pulsgeber hides GNOME’s power mode toggle, whose settings the TUXEDO Control Center overrides within seconds, turns off power-profiles-daemon and keeps the tray of the TUXEDO Control Center from starting.'),
-                _('Unofficial, not affiliated with TUXEDO Computers.'),
+                _('Unofficial community project, not affiliated with TUXEDO Computers. TUXEDO provides no support for it.'),
             ].join('\n\n'),
             website: this.metadata.url,
             issueUrl: `${this.metadata.url}/issues`,

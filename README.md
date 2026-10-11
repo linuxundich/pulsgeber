@@ -115,7 +115,9 @@ last a moment, so Pulsgeber hides it.
 No. Without `tccd` there are no profiles to switch.
 
 **Is Pulsgeber a TUXEDO product?**
-No. It is an unofficial project, not affiliated with TUXEDO Computers.
+No. It is an unofficial community project, not affiliated with TUXEDO
+Computers. TUXEDO provides no support for it; please report problems
+[here](https://github.com/linuxundich/pulsgeber/issues).
 
 ## On the blog
 
