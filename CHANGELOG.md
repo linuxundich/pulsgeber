@@ -10,6 +10,24 @@ fixes on top of it. The version lives in `version-name` in
 
 ## [Unreleased]
 
+Preparation for extensions.gnome.org.
+
+### Changed
+- Pulsgeber now ends the TCC app and its tray through systemd's D-Bus API
+  (`KillUnit` on TCC's own scope) instead of a shell script with `kill`, and
+  finds TCC windows through GNOME's app tracking instead of reading `/proc`
+  for every new window. The extension no longer spawns any processes.
+- The preferences stay alive in the background until TCC has been ended,
+  even if they are closed right after switching the tray off.
+- One settings object and one watch on tccd are shared by the toggle and
+  the power mode hiding; D-Bus calls to tccd are cancelled on disable.
+- Errors are logged with `console.error`.
+
+### Fixed
+- While a profile other than the default was active, Pulsgeber wrote the
+  last picked profile to dconf on every check (every 5 seconds by default),
+  even if it had not changed.
+
 ### Documentation
 - README links to the project page and the project overview on
   linuxundich.de and to the contact form.

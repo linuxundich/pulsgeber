@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import Gio from 'gi://Gio';
-import GioUnix from 'gi://GioUnix';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
+import Shell from 'gi://Shell';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
@@ -21,7 +21,7 @@ const UPOWER_PATH = '/org/freedesktop/UPower';
 
 const ProfileToggle = GObject.registerClass(
 class ProfileToggle extends QuickMenuToggle {
-    _init(extension) {
+    _init(extension, settings) {
         super._init({
             title: _('TCC Profile'),
             gicon: Tccd.giconForCategory(extension.path, 'balanced'),
@@ -29,7 +29,7 @@ class ProfileToggle extends QuickMenuToggle {
             visible: false,
         });
 
-        this._settings = extension.getSettings();
+        this._settings = settings;
         this._icon = category => Tccd.giconForCategory(extension.path, category);
         this._cancellable = new Gio.Cancellable();
         this._profiles = [];
@@ -40,7 +40,7 @@ class ProfileToggle extends QuickMenuToggle {
         this._profileSection = new PopupMenu.PopupMenuSection();
         this.menu.addMenuItem(this._profileSection);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-        if (GioUnix.DesktopAppInfo.new(TCC_DESKTOP_FILE))
+        if (Shell.AppSystem.get_default().lookup_app(TCC_DESKTOP_FILE))
             this.menu.addSettingsAction(_('TUXEDO Control Center'), TCC_DESKTOP_FILE);
 
         this.connect('clicked', () => this._onClicked());
@@ -69,22 +69,22 @@ class ProfileToggle extends QuickMenuToggle {
                 this._refresh(false);
             } catch (e) {
                 if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.CANCELLED))
-                    logError(e, 'UPower');
+                    console.error('UPower:', e);
             }
         });
         this._upowerChangedId = this._upower.connect('g-properties-changed',
             () => this._refresh(false));
+    }
 
-        this._watchId = Tccd.watch(running => {
-            this._running = running;
-            if (running) {
-                this._refresh(true);
-                this._restartPolling();
-            } else {
-                this._stopPolling();
-                this.visible = false;
-            }
-        });
+    set tccdRunning(running) {
+        this._running = running;
+        if (running) {
+            this._refresh(true);
+            this._restartPolling();
+        } else {
+            this._stopPolling();
+            this.visible = false;
+        }
     }
 
     get _onBattery() {
@@ -112,9 +112,10 @@ class ProfileToggle extends QuickMenuToggle {
     async _refresh(withProfiles) {
         try {
             const [active, settings, profiles] = await Promise.all([
-                Tccd.getActiveProfile(_),
-                Tccd.getSettings(),
-                withProfiles || !this._profiles.length ? Tccd.getProfiles(_) : null,
+                Tccd.getActiveProfile(_, this._cancellable),
+                Tccd.getSettings(this._cancellable),
+                withProfiles || !this._profiles.length
+                    ? Tccd.getProfiles(_, this._cancellable) : null,
             ]);
             if (this._cancellable.is_cancelled())
                 return;
@@ -134,7 +135,7 @@ class ProfileToggle extends QuickMenuToggle {
             }
         } catch (e) {
             if (!this._cancellable.is_cancelled())
-                logError(e, 'tccd');
+                console.error('tccd:', e);
         }
     }
 
@@ -189,7 +190,8 @@ class ProfileToggle extends QuickMenuToggle {
         });
         this.menu.setHeader(this._icon(category), _('TCC Profile'), this._headerSubtitle());
 
-        if (this.checked)
+        // _sync() runs on every poll; write only what changed.
+        if (this.checked && this._settings.get_string('last-profile') !== this._activeId)
             this._settings.set_string('last-profile', this._activeId);
     }
 
@@ -231,14 +233,16 @@ class ProfileToggle extends QuickMenuToggle {
         if (!id || id === this._activeId)
             return;
         try {
-            if (!await Tccd.setTempProfile(id))
+            if (!await Tccd.setTempProfile(id, this._cancellable))
                 throw new Error(`tccd rejected profile ${id}`);
             // Show the result right away instead of after the next poll.
             this._activeId = id;
             this._activeName = this._profileName(id);
             this._sync();
         } catch (e) {
-            logError(e, 'tccd');
+            if (this._cancellable.is_cancelled())
+                return;
+            console.error('tccd:', e);
             Main.notifyError(_('Could not switch TCC profile'), e.message);
         }
         this._refresh(false);
@@ -247,7 +251,6 @@ class ProfileToggle extends QuickMenuToggle {
     destroy() {
         this._cancellable.cancel();
         this._stopPolling();
-        Gio.bus_unwatch_name(this._watchId);
         this._upower.disconnect(this._upowerChangedId);
         this._settings.disconnect(this._settingsChangedId);
         super.destroy();
@@ -256,12 +259,12 @@ class ProfileToggle extends QuickMenuToggle {
 
 const Indicator = GObject.registerClass(
 class Indicator extends SystemIndicator {
-    _init(extension) {
+    _init(extension, settings) {
         super._init();
 
-        this._settings = extension.getSettings();
+        this._settings = settings;
         this._indicator = this._addIndicator();
-        this._toggle = new ProfileToggle(extension);
+        this._toggle = new ProfileToggle(extension, settings);
         this.quickSettingsItems.push(this._toggle);
 
         this._toggle.bind_property('gicon', this._indicator, 'gicon',
@@ -275,6 +278,10 @@ class Indicator extends SystemIndicator {
             'notify::visible', this._syncIndicator, this);
         this._settings.connectObject('changed::show-indicator', this._syncIndicator, this);
         this._syncIndicator();
+    }
+
+    set tccdRunning(running) {
+        this._toggle.tccdRunning = running;
     }
 
     destroy() {
@@ -291,15 +298,17 @@ class Indicator extends SystemIndicator {
 class PowerModeHider {
     constructor(settings) {
         this._settings = settings;
-        this._ppd = Main.panel.statusArea.quickSettings._powerProfiles;
-        this._widgets = [this._ppd, ...this._ppd?.quickSettingsItems ?? []];
+        this._tccdRunning = false;
+        this._indicator = Main.panel.statusArea.quickSettings._powerProfiles;
+        this._widgets = [this._indicator, ...this._indicator.quickSettingsItems];
         for (const widget of this._widgets)
             widget.connectObject('notify::visible', () => this._sync(), this);
         this._settings.connectObject('changed::hide-power-mode', () => this._sync(), this);
-        this._watchId = Tccd.watch(running => {
-            this._tccdRunning = running;
-            this._sync();
-        });
+    }
+
+    set tccdRunning(running) {
+        this._tccdRunning = running;
+        this._sync();
     }
 
     get _hide() {
@@ -317,13 +326,12 @@ class PowerModeHider {
 
     _restore() {
         // Let GNOME's own code decide again whether its toggle is shown.
-        const [indicator, toggle] = this._widgets;
-        toggle?._sync?.();
-        indicator?._syncIndicatorsVisible?.();
+        for (const toggle of this._indicator.quickSettingsItems)
+            toggle._sync();
+        this._indicator._syncIndicatorsVisible();
     }
 
     destroy() {
-        Gio.bus_unwatch_name(this._watchId);
         for (const widget of this._widgets)
             widget.disconnectObject(this);
         this._settings.disconnectObject(this);
@@ -338,59 +346,65 @@ class PowerModeHider {
 const QUIT_DELAY_SECONDS = 2;
 
 class TccQuitter {
-    constructor() {
-        this._timeouts = new Set();
-        global.display.connectObject('window-created',
-            (display, window) => this._track(window), this);
-        for (const actor of global.get_window_actors())
-            this._track(actor.get_meta_window());
+    constructor(app) {
+        this._app = app;
+        this._cancellable = new Gio.Cancellable();
+        this._timeoutId = 0;
+        this._app.connectObject('windows-changed', () => this._onWindowsChanged(), this);
     }
 
-    _track(window) {
-        const pid = Tray.tccMainPid(window.get_pid());
-        if (pid)
-            window.connectObject('unmanaged', () => this._onClosed(pid), this);
-    }
-
-    _onClosed(pid) {
-        if (!Tray.isAvailable() || Tray.isEnabled())
+    _onWindowsChanged() {
+        if (this._app.get_n_windows() > 0 || this._timeoutId ||
+            !Tray.isAvailable() || Tray.isEnabled())
             return;
         // Wait a moment: TCC may replace a window by another one.
-        const id = GLib.timeout_add_seconds(GLib.PRIORITY_LOW, QUIT_DELAY_SECONDS, () => {
-            this._timeouts.delete(id);
-            const open = global.get_window_actors().some(actor =>
-                Tray.tccMainPid(actor.get_meta_window().get_pid()) === pid);
-            if (!open && Tray.tccMainPid(pid) === pid)
-                Tray.terminate(pid);
+        this._timeoutId = GLib.timeout_add_seconds(GLib.PRIORITY_LOW, QUIT_DELAY_SECONDS, () => {
+            this._timeoutId = 0;
+            if (this._app.get_n_windows() === 0) {
+                Tray.terminate(this._cancellable).catch(e => {
+                    if (!this._cancellable.is_cancelled())
+                        console.error('TCC tray:', e);
+                });
+            }
             return GLib.SOURCE_REMOVE;
         });
-        this._timeouts.add(id);
     }
 
     destroy() {
-        global.display.disconnectObject(this);
-        for (const actor of global.get_window_actors())
-            actor.get_meta_window().disconnectObject(this);
-        for (const id of this._timeouts)
-            GLib.source_remove(id);
-        this._timeouts.clear();
+        this._cancellable.cancel();
+        this._app.disconnectObject(this);
+        if (this._timeoutId)
+            GLib.source_remove(this._timeoutId);
+        this._timeoutId = 0;
     }
 }
 
 export default class PulsgeberExtension extends Extension {
     enable() {
-        this._indicator = new Indicator(this);
+        this._settings = this.getSettings();
+        this._indicator = new Indicator(this, this._settings);
         Main.panel.statusArea.quickSettings.addExternalIndicator(this._indicator);
-        this._powerModeHider = new PowerModeHider(this.getSettings());
-        this._tccQuitter = new TccQuitter();
+        this._powerModeHider = new PowerModeHider(this._settings);
+
+        const tcc = Shell.AppSystem.get_default().lookup_app(TCC_DESKTOP_FILE);
+        if (tcc)
+            this._tccQuitter = new TccQuitter(tcc);
+
+        this._tccdWatchId = Tccd.watch(running => {
+            this._indicator.tccdRunning = running;
+            this._powerModeHider.tccdRunning = running;
+        });
     }
 
     disable() {
-        this._tccQuitter.destroy();
+        Gio.bus_unwatch_name(this._tccdWatchId);
+        this._tccdWatchId = 0;
+        this._tccQuitter?.destroy();
         this._tccQuitter = null;
         this._powerModeHider.destroy();
         this._powerModeHider = null;
         this._indicator.destroy();
         this._indicator = null;
+        this._settings = null;
     }
 }

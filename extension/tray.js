@@ -4,22 +4,36 @@
 // the "Tray autostart" item in its own tray menu does: the autostart entry
 // ~/.config/autostart/tuxedo-control-center-tray.desktop exists or not (TCC
 // copies it from its dist-data directory). On top of that, the running tray
-// process is stopped or started, so the change applies right away instead
-// of after the next login.
+// is stopped or started, so the change applies right away instead of after
+// the next login.
 //
 // Every start of the TCC app creates a tray icon as well, and closing its
 // window leaves the process running in the tray. So while the tray is off,
-// extension.js ends the TCC app once its last window closes (see
-// tccMainPid() and terminate()).
+// extension.js ends the TCC app once its last window closes.
 
 import Gio from 'gi://Gio';
 import GioUnix from 'gi://GioUnix';
 import GLib from 'gi://GLib';
 
 const DESKTOP_FILE = 'tuxedo-control-center-tray.desktop';
-const TCC_DIR = '/opt/tuxedo-control-center';
-const TEMPLATE = `${TCC_DIR}/resources/dist/tuxedo-control-center/data/dist-data/${DESKTOP_FILE}`;
-const TRAY_ARGS = [`${TCC_DIR}/tuxedo-control-center`, '--tray'];
+const TEMPLATE = `/opt/tuxedo-control-center/resources/dist/tuxedo-control-center/data/dist-data/${DESKTOP_FILE}`;
+
+const SYSTEMD = 'org.freedesktop.systemd1';
+const SYSTEMD_PATH = '/org/freedesktop/systemd1';
+const MANAGER = 'org.freedesktop.systemd1.Manager';
+
+// Electron moves itself into a systemd scope of its own on startup,
+// app-tuxedo-control-center-<pid>.scope, whether started as the app or with
+// --tray. The scope GNOME starts it in (app-gnome-tuxedo\x2dcontrol\x2dcenter-
+// <pid>.scope) is left empty. Both forms are accepted.
+const UNIT_PATTERN = 'app-*tuxedo*control*center*.scope';
+const UNIT_REGEX = /^app-(gnome-)?tuxedo-control-center(-tray)?-\d+\.scope$/;
+
+// Chromium, and so Electron, catches the first SIGTERM to shut down
+// gracefully. TCC vetoes that shutdown while its tray is up, so only a
+// second SIGTERM ends it.
+const SECOND_SIGTERM_SECONDS = 3;
+const SIGTERM = 15;
 
 function autostartFile() {
     return Gio.File.new_for_path(
@@ -40,76 +54,59 @@ export function isEnabled() {
     return autostartFile().query_exists(null);
 }
 
-function cmdline(pid) {
-    const [, bytes] = GLib.file_get_contents(`/proc/${pid}/cmdline`);
-    // Electron rewrites its argv into one space-separated string, so join
-    // the arguments and compare the whole command line.
-    return new TextDecoder().decode(bytes).split('\0').join(' ').trim();
+function callSystemd(method, params, replyType, cancellable) {
+    return Gio.DBus.session.call(SYSTEMD, SYSTEMD_PATH, MANAGER, method, params,
+        replyType, Gio.DBusCallFlags.NO_AUTO_START, -1, cancellable);
+}
+
+// Names of the running TCC scopes, the app's and the tray's alike.
+async function runningUnits(cancellable) {
+    const reply = await callSystemd('ListUnitsByPatterns',
+        new GLib.Variant('(asas)', [['active'], [UNIT_PATTERN]]),
+        new GLib.VariantType('(a(ssssssouso))'), cancellable);
+    const [units] = reply.deepUnpack();
+    return units.map(([name]) => name)
+        .filter(name => UNIT_REGEX.test(name.replaceAll('\\x2d', '-')));
+}
+
+async function sigterm(units, cancellable) {
+    await Promise.all(units.map(unit => callSystemd('KillUnit',
+        new GLib.Variant('(ssi)', [unit, 'all', SIGTERM]), null, cancellable)
+        .catch(e => {
+            // The scope is gone already: TCC has ended.
+            if (Gio.DBusError.get_remote_error(e) !== 'org.freedesktop.systemd1.NoSuchUnit')
+                throw e;
+        })));
+}
+
+function wait(seconds, cancellable) {
+    return new Promise(resolve => {
+        const id = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, seconds, () => {
+            cancellable?.disconnect(cancelledId);
+            resolve();
+            return GLib.SOURCE_REMOVE;
+        });
+        // Removes the timeout when the extension is disabled meanwhile.
+        const cancelledId = cancellable?.connect('cancelled', () => {
+            GLib.source_remove(id);
+            resolve();
+        });
+    });
 }
 
 /**
- * @param {number} pid process id of a window
- * @returns {number} the id of the TCC main process this pid belongs to, or 0
- *   if it is not part of the TCC app (Electron helpers carry `--type=`)
- */
-export function tccMainPid(pid) {
-    try {
-        // Helpers can sit a few levels deep (gpu-process under zygote).
-        for (let depth = 0; depth < 5 && pid > 1; depth++) {
-            const line = cmdline(pid);
-            if (!line.startsWith(TRAY_ARGS[0]))
-                return 0;
-            if (!line.includes('--type='))
-                return pid;
-            const [, status] = GLib.file_get_contents(`/proc/${pid}/status`);
-            pid = Number(/^PPid:\s+(\d+)/m.exec(new TextDecoder().decode(status))?.[1] ?? 0);
-        }
-    } catch {
-        // The process ended while we were looking.
-    }
-    return 0;
-}
-
-// Chromium, and so Electron, catches the first SIGTERM to shut down
-// gracefully and then restores the default handler. TCC vetoes that
-// shutdown while its tray is up, so only a second SIGTERM ends it. Run as
-// its own process, so it also completes when the preferences close; the
-// second signal only goes out if the pid still belongs to the TCC.
-const TERMINATE_SCRIPT = `kill -TERM "$1" || exit 0
-sleep 3
-grep -qa "^${TRAY_ARGS[0]}" "/proc/$1/cmdline" 2>/dev/null && kill -TERM "$1"
-exit 0`;
-
-/**
- * Ends a TCC main process.
+ * Ends the TCC app and its tray icon, through systemd.
  *
- * @param {number} pid
+ * @param {Gio.Cancellable} [cancellable]
  */
-export function terminate(pid) {
-    Gio.Subprocess.new(['sh', '-c', TERMINATE_SCRIPT, 'sh', String(pid)],
-        Gio.SubprocessFlags.NONE);
-}
-
-// Process ids of running TCC main processes, started with `--tray` or as
-// the app; either one shows the tray icon. Electron helpers are left out.
-function tccPids() {
-    const pids = [];
-    const proc = Gio.File.new_for_path('/proc');
-    const children = proc.enumerate_children('standard::name', Gio.FileQueryInfoFlags.NONE, null);
-    for (const info of children) {
-        const name = info.get_name();
-        if (!/^\d+$/.test(name))
-            continue;
-        try {
-            const line = cmdline(name);
-            if (line.startsWith(TRAY_ARGS[0]) && !line.includes('--type='))
-                pids.push(Number(name));
-        } catch {
-            // The process ended while we were looking.
-        }
-    }
-    children.close(null);
-    return pids;
+export async function terminate(cancellable = null) {
+    const units = await runningUnits(cancellable);
+    if (!units.length)
+        return;
+    await sigterm(units, cancellable);
+    await wait(SECOND_SIGTERM_SECONDS, cancellable);
+    if (!cancellable?.is_cancelled())
+        await sigterm(units, cancellable);
 }
 
 /**
@@ -117,21 +114,20 @@ function tccPids() {
  * was started with `--tray` or along with the app. An open TCC window
  * belongs to the same process and closes as well.
  */
-export function hide() {
+export async function hide() {
     try {
         autostartFile().delete(null);
     } catch (e) {
         if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND))
             throw e;
     }
-    for (const pid of tccPids())
-        terminate(pid);
+    await terminate();
 }
 
 /**
  * Restores the autostart entry from TCC's template and starts the tray icon.
  */
-export function show() {
+export async function show() {
     const file = autostartFile();
     try {
         file.get_parent().make_directory_with_parents(null);
@@ -140,6 +136,6 @@ export function show() {
             throw e;
     }
     Gio.File.new_for_path(TEMPLATE).copy(file, Gio.FileCopyFlags.OVERWRITE, null, null);
-    if (!tccPids().length)
+    if (!(await runningUnits(null)).length)
         GioUnix.DesktopAppInfo.new_from_filename(file.get_path()).launch([], null);
 }

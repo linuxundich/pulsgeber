@@ -48,10 +48,17 @@ process and closes as well.
 That alone is not enough, though: every start of the TCC app creates a tray
 icon too, and closing its window leaves the process running in the tray. So
 while the option is on, Pulsgeber ends the TCC app a moment after its last
-window closes, as if it had no tray. Electron swallows the first SIGTERM to
-attempt a graceful shutdown, which TCC vetoes while its tray is up, so
-Pulsgeber sends a second one after three seconds if the process is still
-there.
+window closes, as if it had no tray.
+
+Pulsgeber ends TCC through systemd, without spawning processes or reading
+`/proc`: Electron moves itself into a scope of its own on startup,
+`app-tuxedo-control-center-<pid>.scope`, whether it runs as the app or with
+`--tray`. Pulsgeber lists these scopes over systemd's D-Bus API on the
+session bus and sends SIGTERM to all their processes (`KillUnit`). Electron
+swallows the first SIGTERM to attempt a graceful shutdown, which TCC vetoes
+while its tray is up, so Pulsgeber sends a second one three seconds later;
+TCC then exits within a few seconds. A TCC started outside a systemd scope
+is not touched.
 
 ## TCC and power-profiles-daemon
 
@@ -98,8 +105,8 @@ Other targets: `make zip` (package for extensions.gnome.org), `make pot`
 (update the translation template and `po/de.po`), `make nested` (test in a
 nested shell).
 
-Tested on Arch Linux with GNOME Shell 50.5 and TUXEDO Control Center 3.0.10 on
-a TUXEDO InfinityBook S 17 Gen6. GNOME 51 is declared but not tested yet.
+Tested on Arch Linux with GNOME Shell 50.5 and 51.0 and TUXEDO Control
+Center 3.0.10 on a TUXEDO InfinityBook S 17 Gen6.
 
 ## Layout
 
@@ -109,7 +116,7 @@ a TUXEDO InfinityBook S 17 Gen6. GNOME 51 is declared but not tested yet.
 | `extension/prefs.js` | preferences (libadwaita) and About dialog |
 | `extension/tccd.js` | D-Bus access to `tccd`, icon guess per profile |
 | `extension/ppd.js` | masking and unmasking power-profiles-daemon through systemd |
-| `extension/tray.js` | autostart entry and process of the TCC tray |
+| `extension/tray.js` | autostart entry of the TCC tray, ending TCC through systemd |
 | `build-aux/icons/generate_icons.py` | generates the app icon and the pulse icons; background in [icon.md](icon.md) (German) |
 | `po/` | translations |
 

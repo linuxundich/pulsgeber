@@ -16,18 +16,15 @@ const INTERFACE = 'com.tuxedocomputers.tccd';
 
 const CALL_TIMEOUT_MS = 5000;
 
-// GNOME Shell promisifies this already, the prefs process does not.
-Gio._promisify(Gio.DBusConnection.prototype, 'call');
-
-async function call(method, params = null) {
+async function call(method, params, cancellable) {
     const reply = await Gio.DBus.system.call(
         BUS_NAME, OBJECT_PATH, INTERFACE, method, params, null,
-        Gio.DBusCallFlags.NO_AUTO_START, CALL_TIMEOUT_MS, null);
+        Gio.DBusCallFlags.NO_AUTO_START, CALL_TIMEOUT_MS, cancellable);
     return reply.deepUnpack()[0];
 }
 
-async function callJson(method) {
-    return JSON.parse(await call(method));
+async function callJson(method, cancellable) {
+    return JSON.parse(await call(method, null, cancellable));
 }
 
 // Newer TCC versions store the id of their own profiles as the name, too,
@@ -48,15 +45,16 @@ function withDisplayName(profile, gettext) {
 
 /**
  * @param {(msgid: string) => string} gettext translates TCC's own profile names
+ * @param {Gio.Cancellable} [cancellable]
  * @returns {Promise<object[]>} default and custom profiles, as tccd lists
  *   them, each with `isCustom` set for profiles the user created
  */
-export async function getProfiles(gettext) {
+export async function getProfiles(gettext, cancellable = null) {
     // Profiles that do not ship with the TCC were created by the user;
     // tccd marks them only by listing them separately.
     const [profiles, defaults] = await Promise.all([
-        callJson('GetProfilesJSON'),
-        callJson('GetDefaultProfilesJSON'),
+        callJson('GetProfilesJSON', cancellable),
+        callJson('GetDefaultProfilesJSON', cancellable),
     ]);
     const defaultIds = new Set(defaults.map(p => p.id));
     return profiles.map(p => withDisplayName({...p, isCustom: !defaultIds.has(p.id)}, gettext));
@@ -64,17 +62,19 @@ export async function getProfiles(gettext) {
 
 /**
  * @param {(msgid: string) => string} gettext translates TCC's own profile names
+ * @param {Gio.Cancellable} [cancellable]
  * @returns {Promise<object>} the profile tccd currently applies
  */
-export async function getActiveProfile(gettext) {
-    return withDisplayName(await callJson('GetActiveProfileJSON'), gettext);
+export async function getActiveProfile(gettext, cancellable = null) {
+    return withDisplayName(await callJson('GetActiveProfileJSON', cancellable), gettext);
 }
 
 /**
+ * @param {Gio.Cancellable} [cancellable]
  * @returns {Promise<object>} tccd settings, incl. stateMap {power_ac, power_bat}
  */
-export function getSettings() {
-    return callJson('GetSettingsJSON');
+export function getSettings(cancellable = null) {
+    return callJson('GetSettingsJSON', cancellable);
 }
 
 /**
@@ -83,10 +83,11 @@ export function getSettings() {
  * battery in TCC stays untouched.
  *
  * @param {string} id profile id
+ * @param {Gio.Cancellable} [cancellable]
  * @returns {Promise<boolean>} whether tccd accepted the profile
  */
-export function setTempProfile(id) {
-    return call('SetTempProfileById', new GLib.Variant('(s)', [id]));
+export function setTempProfile(id, cancellable = null) {
+    return call('SetTempProfileById', new GLib.Variant('(s)', [id]), cancellable);
 }
 
 /**

@@ -13,6 +13,9 @@ import * as Ppd from './ppd.js';
 import * as Tccd from './tccd.js';
 import * as Tray from './tray.js';
 
+// GNOME Shell promisifies this already, the prefs process does not.
+Gio._promisify(Gio.DBusConnection.prototype, 'call');
+
 const TCC_DESKTOP_FILE = 'tuxedo-control-center.desktop';
 const AUTOMATIC = 'auto';
 const ICON_NAME = 'de.linuxundich.Pulsgeber';
@@ -48,7 +51,6 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
         });
         settings.bind('show-indicator', indicatorRow, 'active', Gio.SettingsBindFlags.DEFAULT);
         general.add(indicatorRow);
-
 
         if (Tray.isAvailable())
             general.add(this._trayRow(window));
@@ -138,20 +140,23 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
             subtitle: _('Removes the autostart entry and ends the running tray icon; an open TCC window closes as well. Profiles, fans and CPU stay under control of the tccd service.'),
             active: !Tray.isEnabled(),
         });
-        row.connect('notify::active', () => {
+        row.connect('notify::active', async () => {
             // TCC's own "Tray autostart" item changes the same file, so
             // compare against the file rather than the switch.
             if (row.active === !Tray.isEnabled())
                 return;
+            // Ending TCC takes a few seconds; keep the process alive even
+            // if the preferences are closed meanwhile.
+            const app = Gio.Application.get_default();
+            app.hold();
             try {
-                if (row.active)
-                    Tray.hide();
-                else
-                    Tray.show();
+                await (row.active ? Tray.hide() : Tray.show());
             } catch (e) {
-                logError(e, 'TCC tray');
+                console.error('TCC tray:', e);
                 window.add_toast(new Adw.Toast({title: _('Could not change the TCC tray icon')}));
                 row.active = !Tray.isEnabled();
+            } finally {
+                app.release();
             }
         });
         return row;
@@ -162,7 +167,7 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
         try {
             state = await Ppd.getState();
         } catch (e) {
-            logError(e, 'power-profiles-daemon');
+            console.error('power-profiles-daemon:', e);
             return;
         }
         if (state === null)
@@ -198,7 +203,7 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
                     'org.freedesktop.DBus.Error.InteractiveAuthorizationRequired',
                 ].includes(Gio.DBusError.get_remote_error(e));
                 if (!denied)
-                    logError(e, 'power-profiles-daemon');
+                    console.error('power-profiles-daemon:', e);
                 window.add_toast(new Adw.Toast({
                     title: denied ? _('Not authorized') : _('Could not change power-profiles-daemon'),
                 }));
@@ -206,7 +211,7 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
             try {
                 show(await Ppd.getState() === 'masked');
             } catch (e) {
-                logError(e, 'power-profiles-daemon');
+                console.error('power-profiles-daemon:', e);
             }
             row.sensitive = true;
         });

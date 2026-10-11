@@ -13,8 +13,6 @@ const SYSTEMD = 'org.freedesktop.systemd1';
 const PATH = '/org/freedesktop/systemd1';
 const MANAGER = 'org.freedesktop.systemd1.Manager';
 
-Gio._promisify(Gio.DBusConnection.prototype, 'call');
-
 function call(method, params = null, interactive = false) {
     return Gio.DBus.system.call(SYSTEMD, PATH, MANAGER, method, params, null,
         interactive ? Gio.DBusCallFlags.ALLOW_INTERACTIVE_AUTHORIZATION : Gio.DBusCallFlags.NONE,

@@ -11,6 +11,16 @@ Open items and undecided ideas. Shipped changes are in
       not be reproduced on the maintainer's machine (legacy profiles only), a
       tester at TUXEDO is checking it.
 
+## extensions.gnome.org
+
+- [ ] Ask TUXEDO for written permission to use the names "TUXEDO" and
+      "TUXEDO Control Center" (EGO rule on trademarks).
+- [ ] Read through all of `extension/*.js` once more before submitting:
+      reviewers ask about the code and expect the author to answer.
+- [ ] Release 0.5.0, upload the ZIP to extensions.gnome.org.
+- [ ] After approval: replace "GNOME Extensions: planned" and the install
+      note in the README with the link to the EGO page.
+
 ## Documentation
 
 - [ ] Link the English project page on linuxundich.de from the README once it
