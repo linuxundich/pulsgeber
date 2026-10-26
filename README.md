@@ -151,4 +151,4 @@ with AI assistance carry a `Co-Authored-By` line.
 ## License
 
 Pulsgeber is free software under the [GPL-3.0-or-later](LICENSE). It is a
-personal project, tested on a TUXEDO InfinityBook S 17 Gen6 with GNOME 50.5.
+personal project, tested on a TUXEDO InfinityBook S 17 Gen6 with GNOME 51.1 and TCC 3.1.1.

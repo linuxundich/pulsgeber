@@ -11,6 +11,16 @@ Open items and undecided ideas. Shipped changes are in
       not be reproduced on the maintainer's machine (legacy profiles only), a
       tester at TUXEDO is checking it.
 
+## TCC 3.1
+
+- [x] Release 0.5.1.
+- [ ] Check 0.5.1 in the real session: switch "Don't Start TCC Tray" off
+      and on, log in again, the tray must not start.
+- [ ] Report to TUXEDO: TCC 3.1 turns the tray autostart off with an empty
+      file in `~/.config/autostart`, which gnome-session 51 can't parse
+      ("couldn't be parsed") and ignores, so the tray starts anyway.
+      `Hidden=true` would work.
+
 ## extensions.gnome.org
 
 - [x] Names "TUXEDO" and "TUXEDO Control Center": TUXEDO is fine with

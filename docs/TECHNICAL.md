@@ -39,11 +39,21 @@ changes to the YCbCr 4:2:0 workaround. The latter uses `xset`, which has no
 effect on Wayland either.
 
 The option "Don't Start TCC Tray" does the same as "Tray autostart" in the
-tray's own menu: it deletes
-`~/.config/autostart/tuxedo-control-center-tray.desktop`, or copies it back
-from the TCC installation. On top of that it ends or starts the running tray,
-so the change applies right away. An open TCC window belongs to the same
-process and closes as well.
+tray's own menu, which works differently depending on the TCC version:
+
+- Up to TCC 3.0, the tray starts if
+  `~/.config/autostart/tuxedo-control-center-tray.desktop` exists. Pulsgeber
+  deletes it, or copies it back from the TCC installation.
+- From TCC 3.1 on, the package installs the entry to `/etc/xdg/autostart`,
+  and a file of the same name in `~/.config/autostart` turns it off. TCC
+  writes an empty file there, which gnome-session can't parse and ignores,
+  so the tray starts anyway. Pulsgeber writes a copy of the system-wide entry
+  with `Hidden=true` instead, and deletes it to turn the tray back on. TCC's
+  own menu shows both as off.
+
+On top of that Pulsgeber ends or starts the running tray, so the change
+applies right away. An open TCC window belongs to the same process and
+closes as well.
 
 That alone is not enough, though: every start of the TCC app creates a tray
 icon too, and closing its window leaves the process running in the tray. So
@@ -52,8 +62,9 @@ window closes, as if it had no tray.
 
 Pulsgeber ends TCC through systemd, without spawning processes or reading
 `/proc`: Electron moves itself into a scope of its own on startup,
-`app-tuxedo-control-center-<pid>.scope`, whether it runs as the app or with
-`--tray`. Pulsgeber lists these scopes over systemd's D-Bus API on the
+`app-tuxedo-control-center-<pid>.scope` (from TCC 3.1 on
+`app-com.tuxedocomputers.tcc-<pid>.scope`), whether it runs as the app or
+with `--tray`; some helper processes stay in the scope GNOME started it in. Pulsgeber lists these scopes over systemd's D-Bus API on the
 session bus and sends SIGTERM to all their processes (`KillUnit`). Electron
 swallows the first SIGTERM to attempt a graceful shutdown, which TCC vetoes
 while its tray is up, so Pulsgeber sends a second one three seconds later;
@@ -105,8 +116,8 @@ Other targets: `make zip` (package for extensions.gnome.org), `make pot`
 (update the translation template and `po/de.po`), `make nested` (test in a
 nested shell).
 
-Tested on Arch Linux with GNOME Shell 50.5 and 51.0 and TUXEDO Control
-Center 3.0.10 on a TUXEDO InfinityBook S 17 Gen6.
+Tested on Arch Linux with GNOME Shell 50.5 and 51.1 and TUXEDO Control
+Center 3.0.10 and 3.1.1 on a TUXEDO InfinityBook S 17 Gen6.
 
 ## Layout
 

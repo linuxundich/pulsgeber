@@ -10,6 +10,27 @@ fixes on top of it. The version lives in `version-name` in
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-10-26
+
+Support for TUXEDO Control Center 3.1, which reworked its packaging.
+Older TCC versions keep working as before.
+
+### Fixed
+- The menu entry "TUXEDO Control Center" and the button in the
+  preferences were missing with TCC 3.1, which renamed its desktop file to
+  `com.tuxedocomputers.tcc.desktop`. For the same reason, Pulsgeber no
+  longer ended the TCC app after its last window closed while the tray was
+  turned off.
+- Ending TCC missed its main process with TCC 3.1, which now runs in a
+  scope named `app-com.tuxedocomputers.tcc-<pid>.scope`.
+- "Don't Start TCC Tray" did the opposite with TCC 3.1: the tray's
+  autostart entry now lives in `/etc/xdg/autostart`, and a file in
+  `~/.config/autostart` turns it off instead of on. Pulsgeber now writes a
+  copy of the entry with `Hidden=true` there. TCC 3.1 itself writes an empty
+  file, which gnome-session can't parse and ignores, so the tray started
+  anyway; Pulsgeber shows such a tray as starting, and switching the option
+  on turns it off for real.
+
 ## [0.5.0] - 2026-10-11
 
 Preparation for extensions.gnome.org.

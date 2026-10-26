@@ -13,7 +13,16 @@ import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/ex
 import * as Tccd from './tccd.js';
 import * as Tray from './tray.js';
 
-const TCC_DESKTOP_FILE = 'tuxedo-control-center.desktop';
+// The TCC app, under its desktop file name of TCC 3.1 and later or before.
+function lookupTcc() {
+    const appSystem = Shell.AppSystem.get_default();
+    for (const id of Tray.DESKTOP_FILES) {
+        const app = appSystem.lookup_app(id);
+        if (app)
+            return app;
+    }
+    return null;
+}
 
 // tccd picks the default profile by power source, so the toggle follows it.
 const UPOWER_BUS_NAME = 'org.freedesktop.UPower';
@@ -40,8 +49,9 @@ class ProfileToggle extends QuickMenuToggle {
         this._profileSection = new PopupMenu.PopupMenuSection();
         this.menu.addMenuItem(this._profileSection);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-        if (Shell.AppSystem.get_default().lookup_app(TCC_DESKTOP_FILE))
-            this.menu.addSettingsAction(_('TUXEDO Control Center'), TCC_DESKTOP_FILE);
+        const tcc = lookupTcc();
+        if (tcc)
+            this.menu.addSettingsAction(_('TUXEDO Control Center'), tcc.get_id());
 
         this.connect('clicked', () => this._onClicked());
         this.menu.connect('open-state-changed', (menu, open) => {
@@ -386,7 +396,7 @@ export default class PulsgeberExtension extends Extension {
         Main.panel.statusArea.quickSettings.addExternalIndicator(this._indicator);
         this._powerModeHider = new PowerModeHider(this._settings);
 
-        const tcc = Shell.AppSystem.get_default().lookup_app(TCC_DESKTOP_FILE);
+        const tcc = lookupTcc();
         if (tcc)
             this._tccQuitter = new TccQuitter(tcc);
 

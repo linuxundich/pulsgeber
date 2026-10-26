@@ -16,7 +16,6 @@ import * as Tray from './tray.js';
 // GNOME Shell promisifies this already, the prefs process does not.
 Gio._promisify(Gio.DBusConnection.prototype, 'call');
 
-const TCC_DESKTOP_FILE = 'tuxedo-control-center.desktop';
 const AUTOMATIC = 'auto';
 const ICON_NAME = 'de.linuxundich.Pulsgeber';
 
@@ -84,7 +83,7 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
         page.add(profilesGroup);
 
         const buttons = new Adw.PreferencesGroup();
-        const app = GioUnix.DesktopAppInfo.new(TCC_DESKTOP_FILE);
+        const app = Tray.DESKTOP_FILES.map(id => GioUnix.DesktopAppInfo.new(id)).find(Boolean);
         if (app) {
             const openRow = new Adw.ButtonRow({
                 title: _('Open TUXEDO Control Center'),
@@ -137,7 +136,7 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
     _trayRow(window) {
         const row = new Adw.SwitchRow({
             title: _('Don’t Start TCC Tray'),
-            subtitle: _('Removes the autostart entry and ends the running tray icon; an open TCC window closes as well. Profiles, fans and CPU stay under control of the tccd service.'),
+            subtitle: _('Turns off the autostart entry and ends the running tray icon; an open TCC window closes as well. Profiles, fans and CPU stay under control of the tccd service.'),
             active: !Tray.isEnabled(),
         });
         row.connect('notify::active', async () => {
