@@ -54,7 +54,7 @@ class ProfileToggle extends QuickMenuToggle {
             this.menu.addSettingsAction(_('TUXEDO Control Center'), tcc.get_id());
 
         this.connect('clicked', () => this._onClicked());
-        this.menu.connect('open-state-changed', (menu, open) => {
+        this._menuOpenId = this.menu.connect('open-state-changed', (menu, open) => {
             if (open)
                 this._refresh(true);
         });
@@ -263,6 +263,9 @@ class ProfileToggle extends QuickMenuToggle {
         this._stopPolling();
         this._upower.disconnect(this._upowerChangedId);
         this._settings.disconnect(this._settingsChangedId);
+        this.menu.disconnect(this._menuOpenId);
+        this._profileSection.destroy();
+        this._profileSection = null;
         super.destroy();
     }
 });

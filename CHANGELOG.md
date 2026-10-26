@@ -10,6 +10,14 @@ fixes on top of it. The version lives in `version-name` in
 
 ## [Unreleased]
 
+## [0.5.3] - 2026-10-26
+
+### Changed
+- The TCC Profile toggle now disconnects its menu signal and destroys its
+  profile section itself when it is destroyed, instead of leaving both to
+  the menu. Shexli, the static analyzer of extensions.gnome.org, no longer
+  reports them (EGO-L-002, EGO-L-003, EGO-L-005).
+
 ## [0.5.2] - 2026-10-26
 
 ### Fixed
