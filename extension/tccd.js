@@ -110,6 +110,11 @@ export function watch(callback) {
 // profile in the preferences.
 export const CATEGORIES = ['performance', 'balanced', 'power-saver', 'custom'];
 
+/**
+ * @param {object} profile a profile from getProfiles()
+ * @param {object[]} profiles all profiles, to compare CPU limits with
+ * @returns {string} one of CATEGORIES
+ */
 export function guessCategory(profile, profiles) {
     if (profile.isCustom)
         return 'custom';
@@ -134,6 +139,10 @@ export function guessCategory(profile, profiles) {
     return 'balanced';
 }
 
+/**
+ * @param {string} category one of CATEGORIES
+ * @returns {string} icon name of the pulse icon
+ */
 export function iconForCategory(category) {
     return `pulsgeber-${category}-symbolic`;
 }

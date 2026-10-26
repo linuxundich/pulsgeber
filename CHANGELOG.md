@@ -10,6 +10,11 @@ fixes on top of it. The version lives in `version-name` in
 
 ## [Unreleased]
 
+### Documentation
+- JSDoc for `guessCategory()` and `iconForCategory()` in `tccd.js`; ESLint
+  with the GNOME Shell configuration (`eslint-config-gnome`) now passes
+  without findings.
+
 ## [0.5.1] - 2026-10-26
 
 Support for TUXEDO Control Center 3.1, which reworked its packaging.
