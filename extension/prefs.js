@@ -144,18 +144,12 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
             // compare against the file rather than the switch.
             if (row.active === !Tray.isEnabled())
                 return;
-            // Ending TCC takes a few seconds; keep the process alive even
-            // if the preferences are closed meanwhile.
-            const app = Gio.Application.get_default();
-            app.hold();
             try {
                 await (row.active ? Tray.hide() : Tray.show());
             } catch (e) {
                 console.error('TCC tray:', e);
                 window.add_toast(new Adw.Toast({title: _('Could not change the TCC tray icon')}));
                 row.active = !Tray.isEnabled();
-            } finally {
-                app.release();
             }
         });
         return row;

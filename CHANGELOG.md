@@ -10,6 +10,22 @@ fixes on top of it. The version lives in `version-name` in
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-10-26
+
+### Fixed
+- Switching "Don't Start TCC Tray" on or off did nothing: the preferences
+  tried to keep their process alive with `Gio.Application.get_default()`,
+  which is `null` in GNOME's preferences service, and failed before writing
+  the autostart entry. Broken since 0.5.0.
+- The extension now ends the running tray itself as soon as the autostart
+  entry turns it off. GNOME ends the preferences process two seconds after
+  its window closes, too early for the second SIGTERM TCC needs, so the
+  preferences only write the autostart entry.
+- Ending TCC after its last window closed stopped after the first SIGTERM
+  with an error (`Gio.Cancellable.connect()` takes a callback, not a signal
+  name), so the second SIGTERM TCC needs was never sent. Broken since
+  0.5.0.
+
 ### Documentation
 - JSDoc for `guessCategory()` and `iconForCategory()` in `tccd.js`; ESLint
   with the GNOME Shell configuration (`eslint-config-gnome`) now passes

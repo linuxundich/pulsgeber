@@ -351,8 +351,13 @@ class PowerModeHider {
 
 // Every start of the TCC app also creates a tray icon, and closing its
 // window leaves the process running in the tray. While the tray is turned
-// off in the preferences ("Don't Start TCC Tray", no autostart entry), end
-// the app once its last window is gone, as if it had no tray.
+// off in the preferences ("Don't Start TCC Tray"), end the app once its last
+// window is gone, as if it had no tray.
+//
+// Ending the running tray when the option is switched on happens here as
+// well: GNOME ends the preferences process two seconds after its window
+// closes, too early for the second SIGTERM TCC needs. The preferences only
+// change the autostart entry, and the extension follows that file.
 const QUIT_DELAY_SECONDS = 2;
 
 class TccQuitter {
@@ -361,28 +366,50 @@ class TccQuitter {
         this._cancellable = new Gio.Cancellable();
         this._timeoutId = 0;
         this._app.connectObject('windows-changed', () => this._onWindowsChanged(), this);
+
+        this._autostartEnabled = Tray.isEnabled();
+        this._autostartMonitor = Tray.monitorAutostart();
+        this._autostartMonitor.connectObject('changed', () => this._queueQuit(), this);
     }
 
     _onWindowsChanged() {
-        if (this._app.get_n_windows() > 0 || this._timeoutId ||
-            !Tray.isAvailable() || Tray.isEnabled())
+        if (this._app.get_n_windows() === 0)
+            this._queueQuit();
+    }
+
+    _queueQuit() {
+        // Wait a moment: TCC may replace a window by another one, and the
+        // autostart file changes in several steps.
+        if (this._timeoutId)
             return;
-        // Wait a moment: TCC may replace a window by another one.
         this._timeoutId = GLib.timeout_add_seconds(GLib.PRIORITY_LOW, QUIT_DELAY_SECONDS, () => {
             this._timeoutId = 0;
-            if (this._app.get_n_windows() === 0) {
-                Tray.terminate(this._cancellable).catch(e => {
-                    if (!this._cancellable.is_cancelled())
-                        console.error('TCC tray:', e);
-                });
-            }
+            this._quitIfTrayOff();
             return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    _quitIfTrayOff() {
+        const enabled = Tray.isEnabled();
+        const switchedOff = this._autostartEnabled && !enabled;
+        this._autostartEnabled = enabled;
+        if (enabled || !Tray.isAvailable())
+            return;
+        // A window that is still open only closes along with the tray if
+        // the tray was switched off just now.
+        if (this._app.get_n_windows() > 0 && !switchedOff)
+            return;
+        Tray.terminate(this._cancellable).catch(e => {
+            if (!this._cancellable.is_cancelled())
+                console.error('TCC tray:', e);
         });
     }
 
     destroy() {
         this._cancellable.cancel();
         this._app.disconnectObject(this);
+        this._autostartMonitor.disconnectObject(this);
+        this._autostartMonitor.cancel();
         if (this._timeoutId)
             GLib.source_remove(this._timeoutId);
         this._timeoutId = 0;

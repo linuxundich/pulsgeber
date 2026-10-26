@@ -52,7 +52,9 @@ tray's own menu, which works differently depending on the TCC version:
   own menu shows both as off.
 
 On top of that Pulsgeber ends or starts the running tray, so the change
-applies right away. An open TCC window belongs to the same process and
+applies right away. Ending is done by the extension, which watches the
+autostart entry: GNOME ends the preferences process two seconds after its
+window closes, too early for the second SIGTERM TCC needs. An open TCC window belongs to the same process and
 closes as well.
 
 That alone is not enough, though: every start of the TCC app creates a tray

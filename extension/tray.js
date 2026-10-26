@@ -2,8 +2,8 @@
 //
 // Shows or hides the tray icon of the TUXEDO Control Center, the same way
 // the "Tray autostart" item in its own tray menu does. On top of that, the
-// running tray is stopped or started, so the change applies right away
-// instead of after the next login.
+// tray is started right away, or ended by extension.js as soon as the
+// autostart entry turns it off, so the change applies before the next login.
 //
 // TCC changed its autostart in version 3.1:
 // - Up to 3.0, the tray starts if ~/.config/autostart/tuxedo-control-center-
@@ -78,6 +78,14 @@ function hidesSystemEntry(file) {
 }
 
 /**
+ * @returns {Gio.FileMonitor} watches the user's autostart entry; cancel it
+ *   when done
+ */
+export function monitorAutostart() {
+    return autostartFile().monitor_file(Gio.FileMonitorFlags.NONE, null);
+}
+
+/**
  * @returns {boolean} whether the tray icon starts with the session
  */
 export function isEnabled() {
@@ -120,7 +128,7 @@ function wait(seconds, cancellable) {
             return GLib.SOURCE_REMOVE;
         });
         // Removes the timeout when the extension is disabled meanwhile.
-        const cancelledId = cancellable?.connect('cancelled', () => {
+        const cancelledId = cancellable?.connect(() => {
             GLib.source_remove(id);
             resolve();
         });
@@ -143,11 +151,11 @@ export async function terminate(cancellable = null) {
 }
 
 /**
- * Turns the autostart entry off and ends the running tray icon, whether it
- * was started with `--tray` or along with the app. An open TCC window
- * belongs to the same process and closes as well.
+ * Turns the autostart entry off. extension.js notices the change and ends
+ * the running tray icon, whether it was started with `--tray` or along with
+ * the app; an open TCC window belongs to the same process and closes as well.
  */
-export async function hide() {
+export function hide() {
     const file = autostartFile();
     const systemPath = systemAutostartPath();
     if (systemPath) {
@@ -161,7 +169,6 @@ export async function hide() {
     } else {
         deleteIfExists(file);
     }
-    await terminate();
 }
 
 /**

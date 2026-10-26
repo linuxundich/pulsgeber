@@ -14,8 +14,9 @@ Open items and undecided ideas. Shipped changes are in
 ## TCC 3.1
 
 - [x] Release 0.5.1.
-- [ ] Check 0.5.1 in the real session: switch "Don't Start TCC Tray" off
-      and on, log in again, the tray must not start.
+- [x] Check in the real session: the switch did nothing in 0.5.0/0.5.1
+      (fixed in 0.5.2); with 0.5.2 the tray ends right away and no longer
+      starts after logging in again (2026-10-26).
 - [ ] Report to TUXEDO: TCC 3.1 turns the tray autostart off with an empty
       file in `~/.config/autostart`, which gnome-session 51 can't parse
       ("couldn't be parsed") and ignores, so the tray starts anyway.

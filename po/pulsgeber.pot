@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: pulsgeber@linuxundich.de 0.5.1\n"
+"Project-Id-Version: pulsgeber@linuxundich.de 0.5.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-26 22:25+0100\n"
+"POT-Creation-Date: 2026-10-26 23:14+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -148,86 +148,86 @@ msgid ""
 "service."
 msgstr ""
 
-#: extension/prefs.js:155
+#: extension/prefs.js:151
 msgid "Could not change the TCC tray icon"
 msgstr ""
 
-#: extension/prefs.js:176
+#: extension/prefs.js:170
 msgid "Turn Off power-profiles-daemon"
 msgstr ""
 
-#: extension/prefs.js:177
+#: extension/prefs.js:171
 msgid ""
 "Masks the service so that it no longer interferes with the TUXEDO Control "
 "Center. Requires administrator rights."
 msgstr ""
 
-#: extension/prefs.js:207
+#: extension/prefs.js:201
 msgid "Not authorized"
 msgstr ""
 
-#: extension/prefs.js:207
+#: extension/prefs.js:201
 msgid "Could not change power-profiles-daemon"
 msgstr ""
 
-#: extension/prefs.js:227
+#: extension/prefs.js:221
 msgid ""
 "Pulsgeber adds a “TCC Profile” toggle to the Quick Settings and switches the "
 "profiles of the TUXEDO Control Center from there."
 msgstr ""
 
-#: extension/prefs.js:228
+#: extension/prefs.js:222
 msgid ""
 "A profile picked there applies until the power source changes; then the "
 "TUXEDO Control Center applies the profile assigned to AC power or battery "
 "again. A click on the toggle goes back to that profile right away."
 msgstr ""
 
-#: extension/prefs.js:229
+#: extension/prefs.js:223
 msgid ""
 "Pulsgeber talks directly to the TUXEDO Control Center service (tccd), which "
 "runs in the background anyway. The TUXEDO Control Center app and its tray "
 "icon are only needed to create and edit profiles."
 msgstr ""
 
-#: extension/prefs.js:230
+#: extension/prefs.js:224
 msgid ""
 "Optionally, Pulsgeber hides GNOME’s power mode toggle, whose settings the "
 "TUXEDO Control Center overrides within seconds, turns off power-profiles-"
 "daemon and keeps the tray of the TUXEDO Control Center from starting."
 msgstr ""
 
-#: extension/prefs.js:231
+#: extension/prefs.js:225
 msgid ""
 "Unofficial community project, not affiliated with TUXEDO Computers. TUXEDO "
 "provides no support for it."
 msgstr ""
 
-#: extension/prefs.js:238
+#: extension/prefs.js:232
 msgid "translator-credits"
 msgstr ""
 
-#: extension/prefs.js:245
+#: extension/prefs.js:239
 msgid "Default on AC power"
 msgstr ""
 
-#: extension/prefs.js:247
+#: extension/prefs.js:241
 msgid "Default on battery"
 msgstr ""
 
-#: extension/prefs.js:262
+#: extension/prefs.js:256
 msgid "Show in Menu"
 msgstr ""
 
-#: extension/prefs.js:263
+#: extension/prefs.js:257
 msgid "Default profiles are always shown"
 msgstr ""
 
-#: extension/prefs.js:289
+#: extension/prefs.js:283
 msgid "Icon"
 msgstr ""
 
-#: extension/prefs.js:291
+#: extension/prefs.js:285
 #, javascript-format
 msgid "Automatic (%s)"
 msgstr ""
