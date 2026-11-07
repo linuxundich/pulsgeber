@@ -304,6 +304,8 @@ class Indicator extends SystemIndicator {
     }
 });
 
+const LOOKUP_INTERVAL_MS = 500;
+
 // power-profiles-daemon and tccd write the same CPU settings (governor, EPP);
 // tccd checks them every 10 seconds and puts its profile back. GNOME's own
 // power mode toggle then shows a mode that no longer applies, so it can be
@@ -311,12 +313,36 @@ class Indicator extends SystemIndicator {
 class PowerModeHider {
     constructor(settings) {
         this._settings = settings;
+        this._lookupId = 0;
         this._tccdRunning = false;
-        this._indicator = Main.panel.statusArea.quickSettings._powerProfiles;
-        this._widgets = [this._indicator, ...this._indicator.quickSettingsItems];
+        this._indicator = null;
+        this._widgets = [];
+        this._lookup();
+        this._settings.connectObject('changed::hide-power-mode', () => this._sync(), this);
+    }
+
+    // GNOME creates its power mode indicator asynchronously, so at login it
+    // can appear after this extension was enabled. Look again until it is there.
+    _lookup() {
+        const indicator = Main.panel.statusArea.quickSettings._powerProfiles;
+        if (!indicator) {
+            this._lookupId ||= GLib.timeout_add(GLib.PRIORITY_DEFAULT, LOOKUP_INTERVAL_MS, () => {
+                this._lookup();
+                if (this._indicator)
+                    return GLib.SOURCE_REMOVE;
+                return GLib.SOURCE_CONTINUE;
+            });
+            return;
+        }
+        if (this._lookupId) {
+            GLib.source_remove(this._lookupId);
+            this._lookupId = 0;
+        }
+        this._indicator = indicator;
+        this._widgets = [indicator, ...indicator.quickSettingsItems];
         for (const widget of this._widgets)
             widget.connectObject('notify::visible', () => this._sync(), this);
-        this._settings.connectObject('changed::hide-power-mode', () => this._sync(), this);
+        this._sync();
     }
 
     set tccdRunning(running) {
@@ -329,6 +355,10 @@ class PowerModeHider {
     }
 
     _sync() {
+        if (!this._indicator)
+            this._lookup();
+        if (!this._indicator)
+            return;
         if (this._hide) {
             for (const widget of this._widgets)
                 widget.visible = false;
@@ -345,6 +375,9 @@ class PowerModeHider {
     }
 
     destroy() {
+        if (this._lookupId)
+            GLib.source_remove(this._lookupId);
+        this._lookupId = 0;
         for (const widget of this._widgets)
             widget.disconnectObject(this);
         this._settings.disconnectObject(this);

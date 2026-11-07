@@ -10,6 +10,15 @@ fixes on top of it. The version lives in `version-name` in
 
 ## [Unreleased]
 
+## [0.5.4] - 2026-11-08
+
+### Fixed
+- The extension failed to load at login with "this._indicator is undefined"
+  (seen on Ubuntu 26.04 with GNOME 50.1). GNOME creates its power mode
+  indicator asynchronously, so it can be missing when the extension is
+  enabled. Hiding the power mode toggle now waits for it, and the toggle
+  stays hidden after login when the option is on.
+
 ## [0.5.3] - 2026-10-26
 
 ### Changed
