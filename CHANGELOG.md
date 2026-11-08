@@ -10,6 +10,17 @@ fixes on top of it. The version lives in `version-name` in
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-11-08
+
+### Added
+- A message on screen when the profile changes by itself, for example with
+  the power source or in the TCC app. A switch made in Pulsgeber does not
+  show one. Preferences: "Message on Automatic Change".
+- A line in the profile menu with the CPU temperature, the fan speed and, if
+  the device reports it, the power draw. The extension asks the TCC service
+  for sensor data only while the menu is open. Preferences: "Temperature,
+  Fan and Power in the Menu".
+
 ## [0.5.4] - 2026-11-08
 
 ### Fixed

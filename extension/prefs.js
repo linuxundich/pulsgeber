@@ -51,6 +51,20 @@ export default class PulsgeberPreferences extends ExtensionPreferences {
         settings.bind('show-indicator', indicatorRow, 'active', Gio.SettingsBindFlags.DEFAULT);
         general.add(indicatorRow);
 
+        const osdRow = new Adw.SwitchRow({
+            title: _('Message on Automatic Change'),
+            subtitle: _('Show the new profile on screen when it changes by itself, e.g. when unplugging the charger'),
+        });
+        settings.bind('show-osd', osdRow, 'active', Gio.SettingsBindFlags.DEFAULT);
+        general.add(osdRow);
+
+        const sensorsRow = new Adw.SwitchRow({
+            title: _('Temperature, Fan and Power in the Menu'),
+            subtitle: _('Show CPU temperature, fan speed and power draw while the profile menu is open'),
+        });
+        settings.bind('show-sensors', sensorsRow, 'active', Gio.SettingsBindFlags.DEFAULT);
+        general.add(sensorsRow);
+
         if (Tray.isAvailable())
             general.add(this._trayRow(window));
 

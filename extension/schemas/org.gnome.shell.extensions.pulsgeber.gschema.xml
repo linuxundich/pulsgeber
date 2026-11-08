@@ -6,6 +6,14 @@
       <default>true</default>
       <summary>Show an icon in the top bar while a profile other than the default is active</summary>
     </key>
+    <key name="show-osd" type="b">
+      <default>true</default>
+      <summary>Show a message when the profile changes without the user switching it, e.g. with the power source</summary>
+    </key>
+    <key name="show-sensors" type="b">
+      <default>true</default>
+      <summary>Show CPU temperature, fan speed and power draw in the profile menu</summary>
+    </key>
     <key name="hide-power-mode" type="b">
       <default>true</default>
       <summary>Hide GNOME's power mode toggle while the TUXEDO Control Center service is running</summary>

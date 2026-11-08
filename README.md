@@ -54,6 +54,14 @@ Center shows every switch right away.
   <img src="docs/screenshots/quick-settings.webp" alt="The active TCC Profile toggle in the Quick Settings" width="80%">
 </p>
 
+### Know when the profile changes, and how hot it is
+
+When the profile changes without you, for example because you unplugged the
+charger, GNOME shows the new profile on screen for a moment. While the menu is
+open, one line shows the CPU temperature, the fan speed and, where the device
+reports it, the power draw. Pulsgeber asks the Control Center for these values
+only while the menu is open. Both can be switched off in the preferences.
+
 ### Icons that show the pace
 
 One pulse for power saving, two for balanced, three for performance, and a

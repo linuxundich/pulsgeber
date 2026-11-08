@@ -43,8 +43,11 @@ Open items and undecided ideas. Shipped changes are in
 
 - [ ] Take over the TCC hotkey Super+Alt+F6 (without function under Wayland
       anyway).
-- [ ] Sensor line in the menu (`SetSensorDataCollectionStatus` only while the
-      menu is open).
-- [ ] OSD when the profile changes automatically.
+- [x] Sensor line in the menu (`SetSensorDataCollectionStatus` only while the
+      menu is open), 0.6.0.
+- [x] OSD when the profile changes automatically, 0.6.0.
+- [ ] Switch to a profile temporarily, e.g. for one hour, then back to the
+      default.
+- [ ] Profile per application (a game or Blender starts: performance).
 - Not possible on the test device: battery charge profile (none available),
   Fn lock (not supported).

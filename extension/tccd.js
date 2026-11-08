@@ -91,6 +91,37 @@ export function setTempProfile(id, cancellable = null) {
 }
 
 /**
+ * tccd reads fans and sensors only while somebody asks it to.
+ *
+ * @param {boolean} on
+ * @param {Gio.Cancellable} [cancellable]
+ */
+export function setSensorCollection(on, cancellable = null) {
+    return call('SetSensorDataCollectionStatus', new GLib.Variant('(b)', [on]), cancellable);
+}
+
+/**
+ * Readings tccd does not have are -1 or 0, depending on the device; they
+ * come back as null here.
+ *
+ * @param {Gio.Cancellable} [cancellable]
+ * @returns {Promise<{temp: ?number, fan: ?number, power: ?number}>} CPU
+ *   temperature in °C, fan speed in percent, package power in watts
+ */
+export async function getSensors(cancellable = null) {
+    const [fans, power] = await Promise.all([
+        callJson('GetFanDataJSON', cancellable),
+        callJson('GetCpuPowerValuesJSON', cancellable),
+    ]);
+    const valid = (v, min) => typeof v === 'number' && v >= min ? v : null;
+    return {
+        temp: valid(fans.cpu?.temp?.data, 1),
+        fan: valid(fans.cpu?.speed?.data, 0),
+        power: valid(power.powerDraw, 0),
+    };
+}
+
+/**
  * Calls back whenever tccd appears on or vanishes from the system bus.
  *
  * @param {(running: boolean) => void} callback

@@ -24,6 +24,8 @@ function lookupTcc() {
     return null;
 }
 
+const SENSOR_INTERVAL_SECONDS = 1;
+
 // tccd picks the default profile by power source, so the toggle follows it.
 const UPOWER_BUS_NAME = 'org.freedesktop.UPower';
 const UPOWER_PATH = '/org/freedesktop/UPower';
@@ -45,9 +47,18 @@ class ProfileToggle extends QuickMenuToggle {
         this._activeId = null;
         this._defaultId = null;
         this._items = new Map();
+        this._sensorId = 0;
+        this._sensorsOn = false;
+        this._collecting = false;
 
         this._profileSection = new PopupMenu.PopupMenuSection();
         this.menu.addMenuItem(this._profileSection);
+        this._sensorSeparator = new PopupMenu.PopupSeparatorMenuItem();
+        this._sensorItem = new PopupMenu.PopupMenuItem('', {reactive: false, can_focus: false});
+        this._sensorItem.label.add_style_class_name('dim-label');
+        this._sensorSeparator.visible = this._sensorItem.visible = false;
+        this.menu.addMenuItem(this._sensorSeparator);
+        this.menu.addMenuItem(this._sensorItem);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
         const tcc = lookupTcc();
         if (tcc)
@@ -55,14 +66,30 @@ class ProfileToggle extends QuickMenuToggle {
 
         this.connect('clicked', () => this._onClicked());
         this._menuOpenId = this.menu.connect('open-state-changed', (menu, open) => {
-            if (open)
+            if (open) {
                 this._refresh(true);
+                this._startSensors();
+            } else {
+                this._stopSensors();
+            }
         });
+        Main.panel.statusArea.quickSettings.menu.connectObject('open-state-changed',
+            (menu, open) => {
+                if (open)
+                    this._startCollecting();
+                else
+                    this._stopCollecting();
+            }, this);
 
         this._settingsChangedId = this._settings.connect('changed', (s, key) => {
             if (key === 'poll-interval')
                 this._restartPolling();
-            else if (key === 'hidden-profiles' || key === 'profile-categories')
+            else if (key === 'show-sensors') {
+                if (!this._settings.get_boolean(key))
+                    this._stopCollecting();
+                else if (this.menu.isOpen)
+                    this._startSensors();
+            } else if (key === 'hidden-profiles' || key === 'profile-categories')
                 this._rebuildMenu();
         });
 
@@ -93,7 +120,72 @@ class ProfileToggle extends QuickMenuToggle {
             this._restartPolling();
         } else {
             this._stopPolling();
+            this._stopCollecting();
             this.visible = false;
+        }
+    }
+
+    // tccd only reads the sensors while asked to, and fan speed and power
+    // show up about a second later. Ask as soon as the Quick Settings open,
+    // so the values are there once the profile menu is open.
+    _startCollecting() {
+        if (this._collecting || !this._running || !this._settings.get_boolean('show-sensors'))
+            return;
+        this._collecting = true;
+        Tccd.setSensorCollection(true, this._cancellable).catch(e => {
+            if (!this._cancellable.is_cancelled())
+                console.error('tccd:', e);
+        });
+    }
+
+    _stopCollecting() {
+        this._stopSensors();
+        if (!this._collecting)
+            return;
+        this._collecting = false;
+        Tccd.setSensorCollection(false).catch(e => console.error('tccd:', e));
+    }
+
+    _startSensors() {
+        this._stopSensors();
+        this._startCollecting();
+        if (!this._collecting)
+            return;
+        this._sensorsOn = true;
+        this._readSensors();
+        this._sensorId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT,
+            SENSOR_INTERVAL_SECONDS, () => {
+                this._readSensors();
+                return GLib.SOURCE_CONTINUE;
+            });
+    }
+
+    _stopSensors() {
+        if (this._sensorId) {
+            GLib.source_remove(this._sensorId);
+            this._sensorId = 0;
+        }
+        this._sensorsOn = false;
+        this._sensorSeparator.visible = this._sensorItem.visible = false;
+    }
+
+    async _readSensors() {
+        try {
+            const {temp, fan, power} = await Tccd.getSensors(this._cancellable);
+            if (!this._sensorsOn)
+                return;
+            const parts = [];
+            if (temp !== null)
+                parts.push(_('CPU %d °C').format(temp));
+            if (fan !== null)
+                parts.push(_('Fan %d %%').format(fan));
+            if (power !== null)
+                parts.push(_('%s W').format(power < 10 ? power.toFixed(1) : Math.round(power)));
+            this._sensorItem.label.text = parts.join('  ·  ');
+            this._sensorSeparator.visible = this._sensorItem.visible = parts.length > 0;
+        } catch (e) {
+            if (!this._cancellable.is_cancelled())
+                console.error('tccd:', e);
         }
     }
 
@@ -134,6 +226,7 @@ class ProfileToggle extends QuickMenuToggle {
             this._defaultId = this._onBattery ? stateMap.power_bat : stateMap.power_ac;
             // tccd applies this one when the power source changes next.
             this._nextId = this._onBattery ? stateMap.power_ac : stateMap.power_bat;
+            const changedByItself = this._activeId !== null && this._activeId !== active.id;
             this._activeId = active.id;
             this._activeName = active.name;
 
@@ -143,10 +236,22 @@ class ProfileToggle extends QuickMenuToggle {
             } else {
                 this._sync();
             }
+            if (changedByItself)
+                this._showOsd(active);
         } catch (e) {
             if (!this._cancellable.is_cancelled())
                 console.error('tccd:', e);
         }
+    }
+
+    // _activate() records its own switch before the next poll, so a change
+    // seen here was made by tccd (power source) or by the TCC app.
+    _showOsd(profile) {
+        if (!this._settings.get_boolean('show-osd'))
+            return;
+        const found = this._profiles.find(p => p.id === profile.id);
+        Main.osdWindowManager.showAll(this._icon(found ? this._categoryOf(found) : 'balanced'),
+            profile.name);
     }
 
     _categoryOf(profile) {
@@ -261,6 +366,8 @@ class ProfileToggle extends QuickMenuToggle {
     destroy() {
         this._cancellable.cancel();
         this._stopPolling();
+        Main.panel.statusArea.quickSettings.menu.disconnectObject(this);
+        this._stopCollecting();
         this._upower.disconnect(this._upowerChangedId);
         this._settings.disconnect(this._settingsChangedId);
         this.menu.disconnect(this._menuOpenId);
