@@ -37,6 +37,10 @@ preferences.
 
 ## What it does
 
+<table>
+<tr>
+<td width="33%" valign="top">
+
 ### One toggle for all your profiles
 
 A "TCC Profile" toggle in the Quick Settings shows the active profile, and its
@@ -44,29 +48,54 @@ menu lists every profile from the TUXEDO Control Center. Click the toggle to
 switch between the default profile and the one you picked last, just like
 GNOME's own power mode.
 
+</td>
+<td width="33%" valign="top">
+
 ### AC power and battery at a glance
 
 A profile you pick lasts until you plug in or unplug. The menu tells you what
 comes next, for example "Until on battery, then Cool and breezy". The Control
 Center shows every switch right away.
 
-<p align="center">
-  <img src="docs/screenshots/quick-settings.webp" alt="The active TCC Profile toggle in the Quick Settings" width="80%">
-</p>
-
-### Know when the profile changes, and how hot it is
-
-When the profile changes without you, for example because you unplugged the
-charger, GNOME shows the new profile on screen for a moment. While the menu is
-open, one line shows the CPU temperature, the fan speed and, where the device
-reports it, the power draw. Pulsgeber asks the Control Center for these values
-only while the menu is open. Both can be switched off in the preferences.
+</td>
+<td width="33%" valign="top">
 
 ### Icons that show the pace
 
 One pulse for power saving, two for balanced, three for performance, and a
 pulse above a slider for profiles you created yourself. If you like, the top
 bar shows the icon while a non-default profile is active.
+
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td width="55%">
+<img src="docs/screenshots/quick-settings.webp" alt="The active TCC Profile toggle in the Quick Settings" width="100%">
+</td>
+<td valign="middle">
+
+### Know when the profile changes
+
+When the profile changes without you, for example because you unplugged the
+charger, GNOME shows the new profile on screen for a moment.
+
+### And how hot it is
+
+While the menu is open, one line shows the CPU temperature, the fan speed and,
+where the device reports it, the power draw. Pulsgeber asks the Control Center
+for these values only while the menu is open. The message and this line can
+both be switched off in the preferences.
+
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td valign="middle">
 
 ### Made to fit in
 
@@ -75,16 +104,30 @@ Control Center, and can turn off power-profiles-daemon for good. It can also
 keep the Control Center tray from starting; the menu entry
 "TUXEDO Control Center" opens the app whenever you need it.
 
-<p align="center">
-  <img src="docs/screenshots/preferences.webp" alt="The Pulsgeber preferences with top bar icon, tray and power mode" width="49%">
-  <img src="docs/screenshots/preferences-profiles.webp" alt="Profiles in the preferences: show them in the menu and pick an icon" width="49%">
-</p>
-
 ### Your menu, your choice
 
 In the preferences you decide which profiles appear in the menu and which icon
 each one gets. Pulsgeber speaks English and German and follows the language
 of your desktop.
+
+</td>
+<td width="55%">
+<img src="docs/screenshots/preferences.webp" alt="The Pulsgeber preferences with top bar icon, tray and power mode" width="100%">
+<img src="docs/screenshots/preferences-profiles.webp" alt="Profiles in the preferences: show them in the menu and pick an icon" width="100%">
+</td>
+</tr>
+</table>
+
+## At a glance
+
+| | |
+|---|---|
+| **Runs on** | GNOME 50 or 51 |
+| **Needs** | the TUXEDO Control Center with its service `tccd` (package `tuxedo-control-center`, included in TUXEDO OS) |
+| **Works with** | TUXEDO notebooks; without `tccd` there are no profiles to switch |
+| **Languages** | English and German, following the language of your desktop |
+| **Tested on** | TUXEDO InfinityBook S 17 Gen6 with GNOME 51.1 and TCC 3.1.1 |
+| **Licence** | GPL-3.0-or-later; an unofficial community project, not affiliated with TUXEDO Computers |
 
 ## Install
 
@@ -109,23 +152,39 @@ gnome-extensions enable pulsgeber@linuxundich.de
 
 ## Questions
 
-**Do I still need the TUXEDO Control Center app?**
+<details>
+<summary><strong>Do I still need the TUXEDO Control Center app?</strong></summary>
+
 Only to create and edit profiles and to assign them to AC power and battery.
 The profiles are applied by the system service `tccd`, and that is what
 Pulsgeber talks to.
 
-**Why does GNOME's power mode toggle disappear?**
+</details>
+
+<details>
+<summary><strong>Why does GNOME's power mode toggle disappear?</strong></summary>
+
 power-profiles-daemon and `tccd` write the same processor settings, and `tccd`
 puts its profile back within seconds. A change in GNOME's toggle would only
 last a moment, so Pulsgeber hides it.
 
-**Does it work without a TUXEDO notebook?**
+</details>
+
+<details>
+<summary><strong>Does it work without a TUXEDO notebook?</strong></summary>
+
 No. Without `tccd` there are no profiles to switch.
 
-**Is Pulsgeber a TUXEDO product?**
+</details>
+
+<details>
+<summary><strong>Is Pulsgeber a TUXEDO product?</strong></summary>
+
 No. It is an unofficial community project, not affiliated with TUXEDO
 Computers. TUXEDO provides no support for it; please report problems
 [here](https://github.com/linuxundich/pulsgeber/issues).
+
+</details>
 
 ## On the blog
 

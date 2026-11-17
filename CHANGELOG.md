@@ -10,6 +10,9 @@ fixes on top of it. The version lives in `version-name` in
 
 ## [Unreleased]
 
+### Changed
+- README restructured: feature grid, screenshots beside the text, facts at a glance.
+
 ## [0.6.0] - 2026-11-08
 
 ### Added
